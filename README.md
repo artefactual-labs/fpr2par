@@ -17,3 +17,5 @@ Migrate Archivematica Format Policy Registry ([FPR](https://www.archivematica.or
 * Go to `localhost:5000` in browser to confirm that app is running
 * Go to `localhost:5000/add_fpr_data` to load FPR data
 * Check CLI for import progress
+* Return to UI to browse FPR data
+* See homepage for PAR API instructions
