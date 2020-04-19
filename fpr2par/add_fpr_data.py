@@ -17,9 +17,12 @@ import os
 
 def adddata():
 
+    # track total FPR data load time
+    start = datetime.now()
+
     # make sure files are sorted by name so data is entered in correct order
     for file in sorted(os.listdir("sourceJSON")):
-        start = datetime.now()
+
         if file[-5:] == ".json":
             print("processing file: " + file)
 
@@ -100,15 +103,13 @@ def adddata():
 
                     # one of the input JSON files changes date format to include microseconds
                     try:
-                        cleanDate = datetime.datetime.strptime(
+                        cleanDate = datetime.strptime(
                             object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
                         )
                     except:
                         cleanupDate = object["fields"]["lastmodified"]
                         date = cleanupDate[:-5]
-                        cleanDate = datetime.datetime.strptime(
-                            date, "%Y-%m-%dT%H:%M:%S"
-                        )
+                        cleanDate = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
 
                     formatVersion = fpr_format_versions(
                         uuid=object["fields"]["uuid"],
@@ -194,7 +195,7 @@ def adddata():
                         uuid=object["fields"]["uuid"],
                         replaces=object["fields"]["replaces"],
                         script=object["fields"]["script"],
-                        last_modified=datetime.datetime.strptime(
+                        last_modified=datetime.strptime(
                             object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
                         ),
                         enabled=object["fields"]["enabled"],
@@ -211,7 +212,7 @@ def adddata():
                             {
                                 "replaces": object["fields"]["replaces"],
                                 "script": object["fields"]["script"],
-                                "last_modified": datetime.datetime.strptime(
+                                "last_modified": datetime.strptime(
                                     object["fields"]["lastmodified"],
                                     "%Y-%m-%dT%H:%M:%SZ",
                                 ),
@@ -235,15 +236,13 @@ def adddata():
 
                     # one of the input JSON files changes date format to include microseconds
                     try:
-                        cleanDate = datetime.datetime.strptime(
+                        cleanDate = datetime.strptime(
                             object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
                         )
                     except:
                         cleanupDate = object["fields"]["lastmodified"]
                         date = cleanupDate[:-5]
-                        cleanDate = datetime.datetime.strptime(
-                            date, "%Y-%m-%dT%H:%M:%S"
-                        )
+                        cleanDate = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
 
                     idRule = fpr_id_rules(
                         uuid=object["fields"]["uuid"],
@@ -314,7 +313,7 @@ def adddata():
                     fprCommand = fpr_commands(
                         uuid=object["fields"]["uuid"],
                         replaces=object["fields"]["replaces"],
-                        last_modified=datetime.datetime.strptime(
+                        last_modified=datetime.strptime(
                             object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
                         ),
                         tool=object["fields"]["tool"],
@@ -335,7 +334,7 @@ def adddata():
                         ).update(
                             {
                                 "replaces": object["fields"]["replaces"],
-                                "last_modified": datetime.datetime.strptime(
+                                "last_modified": datetime.strptime(
                                     object["fields"]["lastmodified"],
                                     "%Y-%m-%dT%H:%M:%SZ",
                                 ),
@@ -375,15 +374,13 @@ def adddata():
 
                     # one of the input JSON files changes date format to include microseconds
                     try:
-                        cleanDate = datetime.datetime.strptime(
+                        cleanDate = datetime.strptime(
                             object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
                         )
                     except:
                         cleanupDate = object["fields"]["lastmodified"]
                         date = cleanupDate[:-5]
-                        cleanDate = datetime.datetime.strptime(
-                            date, "%Y-%m-%dT%H:%M:%S"
-                        )
+                        cleanDate = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
 
                     fprRule = fpr_rules(
                         uuid=object["fields"]["uuid"],
@@ -417,6 +414,7 @@ def adddata():
                         print("adding " + output)
                         db.session.add(fprRule)
                     db.session.commit()
-        end = datetime.now()
-        print("total FPR data load time: " + str(end - start))
-    return ()
+
+    end = datetime.now()
+    duration = str(end - start)[:-7]
+    return duration
