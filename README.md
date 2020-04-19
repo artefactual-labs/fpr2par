@@ -8,14 +8,13 @@ Migrate Archivematica Format Policy Registry ([FPR](https://www.archivematica.or
 * Activate virtualenv:  
   `source venv/bin/activate`  
 * Install requirements:  
-  `pip install -r requirements.txt`   
-* Create database:  
-  `python create_fpr_db.py`      
+  `pip install -r requirements.txt`         
 * Run (on localhost, port 5000):  
   `export FLASK_APP=run.py`  
   `flask run`  
 * Go to `localhost:5000` in browser to confirm that app is running
-* Press 'Load FPR data from fixtures' button
+* Press "Create FPR database" button
+* Press "Load FPR data from fixtures" button (takes approx 2 mins)
 * Check CLI for import progress
 * Return to UI to browse FPR data
 * See homepage for PAR API instructions
