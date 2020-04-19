@@ -19,6 +19,7 @@ def adddata():
 
     # make sure files are sorted by name so data is entered in correct order
     for file in sorted(os.listdir("sourceJSON")):
+        start = datetime.now()
         if file[-5:] == ".json":
             print("processing file: " + file)
 
@@ -416,5 +417,6 @@ def adddata():
                         print("adding " + output)
                         db.session.add(fprRule)
                     db.session.commit()
-
+        end = datetime.now()
+        print("total FPR data load time: " + (end - start))
     return ()
