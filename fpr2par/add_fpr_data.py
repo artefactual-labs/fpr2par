@@ -11,7 +11,7 @@ from .models import (
     fpr_rules,
 )
 import json
-import datetime
+from datetime import datetime
 import os
 
 
@@ -418,5 +418,5 @@ def adddata():
                         db.session.add(fprRule)
                     db.session.commit()
         end = datetime.now()
-        print("total FPR data load time: " + (end - start))
+        print("total FPR data load time: " + str(end - start))
     return ()
