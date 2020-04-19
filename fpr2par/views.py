@@ -12,5 +12,7 @@ def home():
 @app.route("/add_fpr_data", methods=["GET"])
 def addFPRdata():
     duration = adddata()
+    flash("FPR data loaded")
+    flash("Import duration: " + duration)
 
-    return render_template("add_fpr_data.html", duration=duration)
+    return render_template("index.html")
