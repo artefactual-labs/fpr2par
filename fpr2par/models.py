@@ -31,6 +31,12 @@ class fpr_formats(db.Model):
     fprFormatVersions = db.relationship(
         "fpr_format_versions", cascade="all,delete", backref="fpr_formats", lazy=True
     )
+    fprIdRules = db.relationship(
+        "fpr_id_rules", cascade="all,delete", backref="fpr_formats", lazy=True
+    )
+    fprRules = db.relationship(
+        "fpr_rules", cascade="all,delete", backref="fpr_formats", lazy=True
+    )
 
     def __init__(self, uuid, group, slug, description):
         self.uuid = uuid
@@ -55,6 +61,9 @@ class fpr_format_versions(db.Model):
     pronom_id = db.Column(db.String(255))
     format = db.Column(
         db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
+    )
+    fprCommands = db.relationship(
+        "fpr_commands", cascade="all,delete", backref="fpr_format_versions", lazy=True,
     )
 
     def __init__(
@@ -122,6 +131,9 @@ class fpr_id_commands(db.Model):
     id_tool = db.Column(
         db.String(36), db.ForeignKey("fpr_id_tools.uuid"), nullable=False, index=True,
     )
+    fprIdRules = db.relationship(
+        "fpr_id_rules", cascade="all,delete", backref="fpr_id_commands", lazy=True
+    )
 
     def __init__(
         self,
@@ -147,3 +159,155 @@ class fpr_id_commands(db.Model):
 
     def __repr__(self):
         return "<FPR ID Commands '{}'>".format(self.description)
+
+
+class fpr_id_rules(db.Model):
+    uuid = db.Column(db.String(36), index=True, primary_key=True)
+    replaces = db.Column(db.String(36))
+    last_modified = db.Column(db.DateTime())
+    enabled = db.Column(db.Boolean)
+    command_output = db.Column(db.String(255))
+    format = db.Column(
+        db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
+    )
+    command = db.Column(
+        db.String(36),
+        db.ForeignKey("fpr_id_commands.uuid"),
+        nullable=False,
+        index=True,
+    )
+
+    def __init__(
+        self, uuid, replaces, last_modified, enabled, command_output, format, command,
+    ):
+        self.uuid = uuid
+        self.replaces = replaces
+        self.last_modified = last_modified
+        self.enabled = enabled
+        self.command_output = command_output
+        self.format = format
+        self.command = command
+
+    def __repr__(self):
+        return "<FPR ID Rules '{}'>".format(self.command_output)
+
+
+class fpr_tools(db.Model):
+    uuid = db.Column(db.String(36), index=True, primary_key=True)
+    slug = db.Column(db.String(255))
+    version = db.Column(db.String(255))
+    enabled = db.Column(db.Boolean)
+    description = db.Column(db.String(255))
+    fprCommands = db.relationship(
+        "fpr_commands", cascade="all,delete", backref="fpr_tools", lazy=True,
+    )
+
+    def __init__(self, uuid, slug, version, enabled, description):
+        self.uuid = uuid
+        self.slug = slug
+        self.version = version
+        self.enabled = enabled
+        self.description = description
+
+    def __repr__(self):
+        return "<FPR Tools '{}'>".format(self.description)
+
+
+class fpr_commands(db.Model):
+    uuid = db.Column(db.String(36), index=True, primary_key=True)
+    replaces = db.Column(db.String(36))
+    last_modified = db.Column(db.DateTime())
+    enabled = db.Column(db.Boolean)
+    event_detail_command = db.Column(db.String(255))
+    output_location = db.Column(db.String(255))
+    command_usage = db.Column(db.String(255))
+    verification_command = db.Column(db.String(255))
+    command = db.Column(db.String(255))
+    script_type = db.Column(db.String(255))
+    description = db.Column(db.String(255))
+    tool = db.Column(
+        db.String(36), db.ForeignKey("fpr_tools.uuid"), nullable=False, index=True,
+    )
+    output_format = db.Column(
+        db.String(36), db.ForeignKey("fpr_format_versions.uuid"), index=True,
+    )
+    fprRules = db.relationship(
+        "fpr_rules", cascade="all,delete", backref="fpr_commands", lazy=True
+    )
+
+    def __init__(
+        self,
+        uuid,
+        replaces,
+        last_modified,
+        enabled,
+        event_detail_command,
+        output_location,
+        command_usage,
+        verification_command,
+        command,
+        script_type,
+        description,
+        tool,
+        output_format,
+    ):
+        self.uuid = uuid
+        self.replaces = replaces
+        self.last_modified = last_modified
+        self.enabled = enabled
+        self.event_detail_command = event_detail_command
+        self.output_location = output_location
+        self.command_usage = command_usage
+        self.verification_command = verification_command
+        self.command = command
+        self.script_type = script_type
+        self.description = description
+        self.tool = tool
+        self.output_format = output_format
+
+    def __repr__(self):
+        return "<FPR Commands '{}'>".format(self.description)
+
+
+class fpr_rules(db.Model):
+    uuid = db.Column(db.String(36), index=True, primary_key=True)
+    replaces = db.Column(db.String(36))
+    last_modified = db.Column(db.DateTime())
+    enabled = db.Column(db.Boolean)
+    count_not_okay = db.Column(db.Integer())
+    count_attempts = db.Column(db.Integer())
+    count_okay = db.Column(db.Integer())
+    purpose = db.Column(db.String(255))
+    format = db.Column(
+        db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
+    )
+    command = db.Column(
+        db.String(36), db.ForeignKey("fpr_commands.uuid"), nullable=False, index=True,
+    )
+
+    def __init__(
+        self,
+        uuid,
+        replaces,
+        last_modified,
+        enabled,
+        count_not_okay,
+        count_attempts,
+        count_okay,
+        purpose,
+        format,
+        command,
+    ):
+        self.uuid = uuid
+        self.replaces = replaces
+        self.last_modified = last_modified
+        self.enabled = enabled
+        self.count_not_okay = count_not_okay
+        self.count_attempts = count_attempts
+        self.count_okay = count_okay
+        self.purpose = purpose
+        self.format = format
+        self.command = command
+
+    def __repr__(self):
+        return "<FPR Rules '{}'>".format(self.purpose)
