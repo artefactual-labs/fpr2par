@@ -417,4 +417,6 @@ def adddata():
 
     end = datetime.now()
     duration = str(end - start)[:-7]
+    print("FPR data import duration: " + duration)
+
     return duration
