@@ -3,3 +3,4 @@ __pycache__/
 fpr2par/__pycache__/
 venv/
 fpr2par.db
+log.txt
