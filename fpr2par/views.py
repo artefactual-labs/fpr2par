@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, request
+from flask import Flask, render_template, flash, redirect, request, jsonify
 from fpr2par import app, db
 import os
 from .create_fpr_database import createdbase
@@ -115,3 +115,19 @@ def fprFormatVersions():
     versions = fpr_format_versions.query.all()
     count = fpr_format_versions.query.count()
     return render_template("fpr_format_versions.html", versions=versions, count=count)
+
+
+@app.route("/api/par/file-formats/<id>", methods=["GET"])
+def fileformat(id):
+    version = fpr_format_versions.query.get(id)
+    format = fpr_formats.query.get(version.format)
+    group = fpr_format_groups.query.get(format.group)
+    response = {
+        "name": version.description,
+        "localLastModifiedDate": str(version.last_modified),
+        "version": version.version,
+        "id": {"guid": version.uuid, "namespace": "https://archivematica.org"},
+        "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID"},
+        "type": group.description,
+    }
+    return jsonify(response)
