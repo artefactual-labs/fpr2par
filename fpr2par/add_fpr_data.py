@@ -191,13 +191,21 @@ def adddata():
                 if object["model"] == "fpr.idcommand":
                     output = object["model"] + " " + object["fields"]["description"]
 
+                    # one of the input JSON files changes date format to include microseconds
+                    try:
+                        cleanDate = datetime.strptime(
+                            object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
+                        )
+                    except:
+                        cleanupDate = object["fields"]["lastmodified"]
+                        date = cleanupDate[:-5]
+                        cleanDate = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
+
                     idCommand = fpr_id_commands(
                         uuid=object["fields"]["uuid"],
                         replaces=object["fields"]["replaces"],
                         script=object["fields"]["script"],
-                        last_modified=datetime.strptime(
-                            object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
-                        ),
+                        last_modified=cleanDate,
                         enabled=object["fields"]["enabled"],
                         script_type=object["fields"]["script_type"],
                         config=object["fields"]["config"],
@@ -212,10 +220,7 @@ def adddata():
                             {
                                 "replaces": object["fields"]["replaces"],
                                 "script": object["fields"]["script"],
-                                "last_modified": datetime.strptime(
-                                    object["fields"]["lastmodified"],
-                                    "%Y-%m-%dT%H:%M:%SZ",
-                                ),
+                                "last_modified": cleanDate,
                                 "enabled": object["fields"]["enabled"],
                                 "script_type": object["fields"]["script_type"],
                                 "config": object["fields"]["config"],
@@ -310,12 +315,20 @@ def adddata():
                 if object["model"] == "fpr.fpcommand":
                     output = object["model"] + " " + object["fields"]["description"]
 
+                    # one of the input JSON files changes date format to include microseconds
+                    try:
+                        cleanDate = datetime.strptime(
+                            object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
+                        )
+                    except:
+                        cleanupDate = object["fields"]["lastmodified"]
+                        date = cleanupDate[:-5]
+                        cleanDate = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
+
                     fprCommand = fpr_commands(
                         uuid=object["fields"]["uuid"],
                         replaces=object["fields"]["replaces"],
-                        last_modified=datetime.strptime(
-                            object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%SZ"
-                        ),
+                        last_modified=cleanDate,
                         tool=object["fields"]["tool"],
                         enabled=object["fields"]["enabled"],
                         event_detail_command=object["fields"]["event_detail_command"],
@@ -334,10 +347,7 @@ def adddata():
                         ).update(
                             {
                                 "replaces": object["fields"]["replaces"],
-                                "last_modified": datetime.strptime(
-                                    object["fields"]["lastmodified"],
-                                    "%Y-%m-%dT%H:%M:%SZ",
-                                ),
+                                "last_modified": cleanDate,
                                 "tool": object["fields"]["tool"],
                                 "enabled": object["fields"]["enabled"],
                                 "event_detail_command": object["fields"][
