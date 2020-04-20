@@ -18,3 +18,5 @@ Migrate Archivematica Format Policy Registry ([FPR](https://www.archivematica.or
 * Check CLI for import progress
 * Return to UI to browse FPR data
 * See homepage for PAR API instructions
+
+![screencap](fpr2par-demo.png)
