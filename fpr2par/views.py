@@ -73,3 +73,42 @@ def createFPRdbase():
 def deleteFPRdata():
     deletedbase()
     return redirect("/")
+
+
+@app.route("/fpr_format_groups", methods=["GET"])
+def fprFormatGroups():
+    formatGroups = fpr_format_groups.query.all()
+    count = fpr_format_groups.query.count()
+    return render_template(
+        "fpr_format_groups.html", formatGroups=formatGroups, count=count
+    )
+
+
+@app.route("/fpr_format_group/<id>", methods=["GET"])
+def fprFormatGroup(id):
+    formats = fpr_formats.query.filter_by(group=id).all()
+    formatGroup = fpr_format_groups.query.get(id)
+    return render_template(
+        "fpr_format_group.html", formats=formats, formatGroup=formatGroup
+    )
+
+
+@app.route("/fpr_formats", methods=["GET"])
+def fprFormats():
+    formats = fpr_formats.query.all()
+    count = fpr_formats.query.count()
+    return render_template("fpr_formats.html", formats=formats, count=count)
+
+
+@app.route("/fpr_format_version/<id>", methods=["GET"])
+def fprFormatVersion(id):
+    versions = fpr_format_versions.query.filter_by(format=id).all()
+    format = fpr_formats.query.get(id)
+    return render_template("fpr_format_version.html", format=format, versions=versions)
+
+
+@app.route("/fpr_format_versions", methods=["GET"])
+def fprFormatVersions():
+    versions = fpr_format_versions.query.all()
+    count = fpr_format_versions.query.count()
+    return render_template("fpr_format_versions.html", versions=versions, count=count)

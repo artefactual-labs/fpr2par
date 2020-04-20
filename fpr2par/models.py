@@ -15,7 +15,7 @@ class fpr_format_groups(db.Model):
         self.description = description
 
     def __repr__(self):
-        return "<FPR Format Groups '{}'>".format(self.description)
+        return format(self.description)
 
 
 class fpr_formats(db.Model):
@@ -27,6 +27,9 @@ class fpr_formats(db.Model):
         db.ForeignKey("fpr_format_groups.uuid"),
         nullable=False,
         index=True,
+    )
+    fprFormatGroup = db.relationship(
+        "fpr_format_groups", cascade="all,delete", backref="fpr_formats", lazy=True
     )
     fprFormatVersions = db.relationship(
         "fpr_format_versions", cascade="all,delete", backref="fpr_formats", lazy=True
@@ -45,7 +48,7 @@ class fpr_formats(db.Model):
         self.description = description
 
     def __repr__(self):
-        return "<FPR Formats '{}'>".format(self.description)
+        return format(self.description)
 
 
 class fpr_format_versions(db.Model):
@@ -61,9 +64,6 @@ class fpr_format_versions(db.Model):
     pronom_id = db.Column(db.String(255))
     format = db.Column(
         db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
-    )
-    fprCommands = db.relationship(
-        "fpr_commands", cascade="all,delete", backref="fpr_format_versions", lazy=True,
     )
 
     def __init__(
@@ -93,7 +93,7 @@ class fpr_format_versions(db.Model):
         self.format = format
 
     def __repr__(self):
-        return "<FPR Format Versions '{}'>".format(self.pronom_id)
+        return format(self.pronom_id)
 
 
 class fpr_id_tools(db.Model):
@@ -116,7 +116,7 @@ class fpr_id_tools(db.Model):
         self.description = description
 
     def __repr__(self):
-        return "<FPR ID Tools '{}'>".format(self.description)
+        return format(self.description)
 
 
 class fpr_id_commands(db.Model):
@@ -158,7 +158,7 @@ class fpr_id_commands(db.Model):
         self.id_tool = id_tool
 
     def __repr__(self):
-        return "<FPR ID Commands '{}'>".format(self.description)
+        return format(self.description)
 
 
 class fpr_id_rules(db.Model):
@@ -189,7 +189,7 @@ class fpr_id_rules(db.Model):
         self.command = command
 
     def __repr__(self):
-        return "<FPR ID Rules '{}'>".format(self.command_output)
+        return format(self.command_output)
 
 
 class fpr_tools(db.Model):
@@ -210,7 +210,7 @@ class fpr_tools(db.Model):
         self.description = description
 
     def __repr__(self):
-        return "<FPR Tools '{}'>".format(self.description)
+        return format(self.description)
 
 
 class fpr_commands(db.Model):
@@ -266,7 +266,7 @@ class fpr_commands(db.Model):
         self.output_format = output_format
 
     def __repr__(self):
-        return "<FPR Commands '{}'>".format(self.description)
+        return format(self.description)
 
 
 class fpr_rules(db.Model):
@@ -310,4 +310,4 @@ class fpr_rules(db.Model):
         self.command = command
 
     def __repr__(self):
-        return "<FPR Rules '{}'>".format(self.purpose)
+        return format(self.purpose)

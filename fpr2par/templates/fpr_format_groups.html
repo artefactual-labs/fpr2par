@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if formatGroups %}
+<div class="alert alert-info"><h4>FPR format groups ({{count}})</h4></div>
+
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+  <td><strong>Description</strong></td>
+  <td><strong>Slug</strong></td>
+  <td><strong>UUID</strong></td>
+  <td><strong>Format count</strong></td>
+  </tr>
+  {% for group in formatGroups %}
+  <tr>
+        <td>{{ group.description }}</td>
+        <td>{{ group.slug }}</td>
+        <td>{{ group.uuid }}</td>
+        <td><a href="/fpr_format_group/{{group.uuid}}">{{ group.fprFormats|length }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+
+{% endblock %}

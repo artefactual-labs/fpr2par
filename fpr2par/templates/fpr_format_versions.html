@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if versions %}
+<div class="alert alert-info"><h4><a href="/fpr_formats">File formats</a> / File format versions ({{count}})</h4></div>
+
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+    <td><strong>Slug</strong></td>
+    <td><strong>Description</strong></td>
+    <td><strong>PRONOM ID</strong></td>
+    <td><strong>Version</strong></td>
+    <td><strong>Preservation format</strong></td>
+    <td><strong>Access format</strong></td>
+    <td><strong>UUID</strong></td>
+    <td><strong>Last modified</strong></td>
+    <td><strong>Enabled</strong></td>
+    <td><strong>Replaces</strong></td>
+
+
+    </tr>
+    {% for version in versions %}
+    <tr>
+          <td><a href="/fpr_format_version/{{version.format}}">{{ version.slug }}</a></td>
+          <td>{{ version.description }}</td>
+          <td>{{ version.pronom_id }}</td>
+          <td>{{ version.version }}</td>
+          <td>{{ version.preservation_format }}</td>
+          <td>{{ version.access_format }}</td>
+          <td>{{ version.uuid }}</td>
+          <td>{{ version.last_modified }}</td>
+          <td>{{ version.enabled }}</td>
+          <td>{{ version.replaces }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
