@@ -126,8 +126,12 @@ def fileformat(id):
         "name": version.description,
         "localLastModifiedDate": str(version.last_modified),
         "version": version.version,
-        "id": {"guid": version.uuid, "namespace": "https://archivematica.org"},
+        "id": {
+            "guid": version.uuid,
+            "name": format.description,
+            "namespace": "https://archivematica.org",
+        },
         "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID"},
-        "type": group.description,
+        "type": [group.description],
     }
     return jsonify(response)
