@@ -7,8 +7,8 @@
 
 <table class="table table-striped table-bordered table-condensed sortable">
   <tr>
-    <td><strong>Slug</strong></td>
     <td><strong>Description</strong></td>
+    <td><strong>Slug</strong></td>
     <td><strong>PRONOM ID</strong></td>
     <td><strong>Version</strong></td>
     <td><strong>Preservation format</strong></td>
@@ -22,8 +22,8 @@
     </tr>
     {% for version in versions %}
     <tr>
-          <td><a href="/fpr_format_version/{{version.format}}">{{ version.slug }}</a></td>
-          <td>{{ version.description }}</td>
+          <td><a href="/fpr_format_version/{{version.format}}">{{ version.description }}</a></td>
+          <td>{{ version.slug }}</td>
           <td>{{ version.pronom_id }}</td>
           <td>{{ version.version }}</td>
           <td>{{ version.preservation_format }}</td>

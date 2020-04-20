@@ -41,6 +41,8 @@ def home():
         commands = ""
         rules = ""
 
+    apiUrl = request.base_url + "api/par"
+
     return render_template(
         "index.html",
         formatGroups=formatGroups,
@@ -52,6 +54,7 @@ def home():
         tools=tools,
         commands=commands,
         rules=rules,
+        apiUrl=apiUrl,
     )
 
 

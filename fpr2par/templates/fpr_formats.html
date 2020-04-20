@@ -8,18 +8,19 @@
 <table class="table table-striped table-bordered table-condensed sortable">
   <tr>
   <td><strong>Description</strong></td>
+  <td><strong>Group</strong></td>
+  <td><strong>Versions</strong></td>  
   <td><strong>Slug</strong></td>
   <td><strong>UUID</strong></td>
-  <td><strong>Group</strong></td>
-  <td><strong>Versions</strong></td>
   </tr>
   {% for format in formats %}
   <tr>
         <td>{{ format.description }}</td>
-        <td>{{ format.slug }}</td>
-        <td>{{ format.uuid }}</td>
         <td><a href="/fpr_format_group/{{format.group}}">{{ format.fprFormatGroup }}</a></td>
         <td>{% if format.fprFormatVersions|length != 0 %}<a href="/fpr_format_version/{{format.uuid}}">{{ format.fprFormatVersions|length }}</a>{% else %}{{ format.fprFormatVersions|length }}{% endif %} </td>
+        <td>{{ format.slug }}</td>
+        <td>{{ format.uuid }}</td>
+
   </tr>
   {% endfor %}
 </table>
