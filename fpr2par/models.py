@@ -34,12 +34,6 @@ class fpr_formats(db.Model):
     fprFormatVersions = db.relationship(
         "fpr_format_versions", cascade="all,delete", backref="fpr_formats", lazy=True
     )
-    fprIdRules = db.relationship(
-        "fpr_id_rules", cascade="all,delete", backref="fpr_formats", lazy=True
-    )
-    fprRules = db.relationship(
-        "fpr_rules", cascade="all,delete", backref="fpr_formats", lazy=True
-    )
 
     def __init__(self, uuid, group, slug, description):
         self.uuid = uuid
@@ -64,6 +58,12 @@ class fpr_format_versions(db.Model):
     pronom_id = db.Column(db.String(255))
     format = db.Column(
         db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
+    )
+    fprIdRules = db.relationship(
+        "fpr_id_rules", cascade="all,delete", backref="fpr_format_versions", lazy=True
+    )
+    fprRules = db.relationship(
+        "fpr_rules", cascade="all,delete", backref="fpr_format_versions", lazy=True
     )
 
     def __init__(
@@ -168,7 +168,10 @@ class fpr_id_rules(db.Model):
     enabled = db.Column(db.Boolean)
     command_output = db.Column(db.String(255))
     format = db.Column(
-        db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
+        db.String(36),
+        db.ForeignKey("fpr_format_versions.uuid"),
+        nullable=False,
+        index=True,
     )
     command = db.Column(
         db.String(36),
@@ -279,7 +282,10 @@ class fpr_rules(db.Model):
     count_okay = db.Column(db.Integer())
     purpose = db.Column(db.String(255))
     format = db.Column(
-        db.String(36), db.ForeignKey("fpr_formats.uuid"), nullable=False, index=True,
+        db.String(36),
+        db.ForeignKey("fpr_format_versions.uuid"),
+        nullable=False,
+        index=True,
     )
     command = db.Column(
         db.String(36), db.ForeignKey("fpr_commands.uuid"), nullable=False, index=True,
