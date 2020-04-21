@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if idTools %}
+<div class="alert alert-info"><h4>Identification tools ({{count}})</h4></div>
+
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+  <td><strong>Description</strong></td>
+  <td><strong>Version</strong></td>
+  <td><strong>Enabled</strong></td>
+  <td><strong>ID commands</strong></td>
+  <td><strong>Slug</strong></td>
+  <td><strong>UUID</strong></td>
+  </tr>
+  {% for idTool in idTools %}
+  <tr>
+        <td>{{ idTool.description }}</td>
+        <td>{{ idTool.version }}</td>
+        <td>{{ idTool.enabled }}</td>
+        <td>{% if idTool.fprIdCommands|length != 0 %}<a href="/fpr_id_command/{{idTool.uuid}}">{{ idTool.fprIdCommands|length }}</a>{% else %}{{ idTool.fprIdCommands|length }}{% endif %} </td>
+        <td>{{ idTool.slug }}</td>
+        <td>{{ idTool.uuid }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

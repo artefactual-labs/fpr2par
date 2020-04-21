@@ -179,6 +179,12 @@ class fpr_id_rules(db.Model):
         nullable=False,
         index=True,
     )
+    fprIdCommand = db.relationship(
+        "fpr_id_commands", cascade="all,delete", backref="fpr_id_rules", lazy=True
+    )
+    fprFormat = db.relationship(
+        "fpr_format_versions", cascade="all,delete", backref="fpr_id_rules", lazy=True
+    )
 
     def __init__(
         self, uuid, replaces, last_modified, enabled, command_output, format, command,
@@ -289,6 +295,12 @@ class fpr_rules(db.Model):
     )
     command = db.Column(
         db.String(36), db.ForeignKey("fpr_commands.uuid"), nullable=False, index=True,
+    )
+    fprCommand = db.relationship(
+        "fpr_commands", cascade="all,delete", backref="fpr_rules", lazy=True
+    )
+    fprFormat = db.relationship(
+        "fpr_format_versions", cascade="all,delete", backref="fpr_rules", lazy=True
     )
 
     def __init__(

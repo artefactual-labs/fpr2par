@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if idRules %}
+<div class="alert alert-info"><h4>Identification rules ({{count}})</h4></div>
+
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+  <td><strong>Command output</strong></td>
+  <td><strong>Format version</strong></td>
+  <td><strong>Enabled</strong></td>
+  <td><strong>ID command</strong></td>
+  <td><strong>Last modified</strong></td>
+  <td><strong>UUID</strong></td>
+  <td><strong>Replaces</strong></td>
+
+  </tr>
+  {% for idRule in idRules %}
+  <tr>
+        <td>{{ idRule.command_output }}</td>
+        <td>{{ idRule.fprFormat }}</td>
+        <td>{{ idRule.enabled }}</td>
+        <td>{{ idRule.fprIdCommand }}</td>
+        <td>{{ idRule.last_modified }}</td>
+        <td>{{ idRule.uuid }}</td>
+        <td>{{ idRule.replaces }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}
