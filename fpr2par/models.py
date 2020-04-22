@@ -243,6 +243,9 @@ class fpr_commands(db.Model):
     fprRules = db.relationship(
         "fpr_rules", cascade="all,delete", backref="fpr_commands", lazy=True
     )
+    outputFormat = db.relationship(
+        "fpr_format_versions", cascade="all,delete", backref="fpr_commands", lazy=True
+    )
 
     def __init__(
         self,

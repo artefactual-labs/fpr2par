@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if tools %}
+<div class="alert alert-info"><h4>FPR tools ({{count}})</h4></div>
+
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+  <td><strong>Description</strong></td>
+  <td><strong>Version</strong></td>
+  <td><strong>Enabled</strong></td>
+  <td><strong>Commands</strong></td>
+  <td><strong>Slug</strong></td>
+  <td><strong>UUID</strong></td>
+  </tr>
+  {% for tool in tools %}
+  <tr>
+        <td>{{ tool.description }}</td>
+        <td>{{ tool.version }}</td>
+        <td>{{ tool.enabled }}</td>
+        <td>{% if tool.fprCommands|length != 0 %}<a href="/fpr_command/{{tool.uuid}}">{{ tool.fprCommands|length }}</a>{% else %}{{ tool.fprCommands|length }}{% endif %} </td>
+        <td>{{ tool.slug }}</td>
+        <td>{{ tool.uuid }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

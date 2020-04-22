@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if commands %}
+<div class="alert alert-info"><h4>FPR commands ({{count}})</h4></div>
+<div class="panel-body">
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+  <td><strong>Usage</strong></td>
+  <td><strong>Description</strong></td>
+  <td><strong>FPR rules</strong></td>  
+  <td><strong>Command</strong></td>
+  <td><strong>Script type</strong></td>
+  <td><strong>Enabled</strong></td>
+  <td><strong>Output format</strong></td>
+  <td><strong>Last modified</strong></td>
+  <td><strong>Output location</strong></td>
+  <td><strong>Replaces</strong></td>
+  <td><strong>UUID</strong></td>
+  <td><strong>Event detail command</strong></td>
+  <td><strong>Verification command</strong></td>
+  </tr>
+  {% for command in commands %}
+  <tr>
+        <td>{{ command.command_usage }}</td>
+        <td>{{ command.description }}</td>
+        <td>{% if command.fprRules|length != 0 %}<a href="/fpr_rule/{{command.uuid}}">{{ command.fprRules|length }}</a>{% else %}{{ command.fprRules|length }}{% endif %} </td>
+        <td>{{ command.command }}</td>
+        <td>{{ command.script_type }}</td>
+        <td>{{ command.enabled }}</td>
+        <td>{{ command.outputFormat}}</td>
+        <td>{{ command.last_modified }}</td>
+        <td style ="word-break:break-word;">{{ command.output_location }}</td>
+        <td style ="word-break:break-word;">{{ command.replaces }}</td>
+        <td style ="word-break:break-word;">{{ command.uuid }}</td>
+        <td style ="word-break:break-word;">{{ command.event_detail_command }}</td>
+        <td style ="word-break:break-word;">{{ command.verification_command }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -148,6 +148,45 @@ def fprIdRules():
     return render_template("fpr_id_rules.html", idRules=idRules, count=count)
 
 
+@app.route("/fpr_tools", methods=["GET"])
+def fprTools():
+    tools = fpr_tools.query.all()
+    count = fpr_tools.query.count()
+    return render_template("fpr_tools.html", tools=tools, count=count)
+
+
+@app.route("/fpr_commands", methods=["GET"])
+def fprCommands():
+    commands = fpr_commands.query.all()
+    count = fpr_commands.query.count()
+    return render_template("fpr_commands.html", commands=commands, count=count)
+
+
+@app.route("/fpr_command/<id>", methods=["GET"])
+def fprCommand(id):
+    commands = fpr_commands.query.filter_by(tool=id).all()
+    count = fpr_commands.query.filter_by(tool=id).count()
+    tool = fpr_tools.query.get(id)
+    return render_template(
+        "fpr_command.html", commands=commands, tool=tool, count=count
+    )
+
+
+@app.route("/fpr_rules", methods=["GET"])
+def fprRules():
+    rules = fpr_rules.query.all()
+    count = fpr_rules.query.count()
+    return render_template("fpr_rules.html", rules=rules, count=count)
+
+
+@app.route("/fpr_rule/<id>", methods=["GET"])
+def fprRule(id):
+    rules = fpr_rules.query.filter_by(command=id).all()
+    count = fpr_rules.query.filter_by(command=id).count()
+    command = fpr_commands.query.get(id)
+    return render_template("fpr_rule.html", rules=rules, command=command, count=count)
+
+
 @app.route("/api/par/file-formats/<id>", methods=["GET"])
 def fileformat(id):
     version = fpr_format_versions.query.get(id)

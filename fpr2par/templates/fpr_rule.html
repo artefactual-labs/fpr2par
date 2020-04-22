@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if rules %}
+<div class="alert alert-info"><h4><a href="/fpr_commands">{{command.description}}</a> / FPR rules ({{count}})</h4></div>
+
+<table class="table table-striped table-bordered table-condensed sortable">
+  <tr>
+  <td><strong>Purpose</strong></td>
+  <td><strong>Format</strong></td>
+  <td><strong>Enabled</strong></td>
+  <td><strong>FPR command</strong></td>
+  <td><strong>Last modified</strong></td>
+  <td><strong>Replaces</strong></td>
+  <td><strong>UUID</strong></td>
+  <td><strong>Attempts</strong></td>
+  <td><strong>No. okay</strong></td>
+  <td><strong>No. not okay</strong></td>
+  </tr>
+  {% for rule in rules %}
+  <tr>
+        <td>{{ rule.purpose }}</td>
+        <td>{{ rule.fprFormat }}</td>
+        <td>{{ rule.enabled }}</td>
+        <td>{{ rule.fprCommand }}</td>
+        <td>{{ rule.last_modified }}</td>
+        <td>{{ rule.replaces }}</td>
+        <td>{{ rule.uuid }}</td>
+        <td>{{ rule.count_attempts }}</td>
+        <td>{{ rule.count_okay }}</td>
+        <td>{{ rule.count_not_okay }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}
