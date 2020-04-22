@@ -67,24 +67,27 @@ def admin():
     return render_template("admin.html")
 
 
+@app.route("/create_fpr_database", methods=["GET"])
+@basic_auth.required
+def createFPRdbase():
+    createdbase()
+    return redirect("/admin")
+
+
 @app.route("/add_fpr_data", methods=["GET"])
+@basic_auth.required
 def addFPRdata():
     duration = adddata()
     flash("FPR data loaded")
     flash("Import duration: " + duration)
-    return redirect("/")
-
-
-@app.route("/create_fpr_database", methods=["GET"])
-def createFPRdbase():
-    createdbase()
-    return redirect("/")
+    return redirect("/admin")
 
 
 @app.route("/delete_fpr_database", methods=["GET"])
+@basic_auth.required
 def deleteFPRdata():
     deletedbase()
-    return redirect("/")
+    return redirect("/admin")
 
 
 @app.route("/fpr_format_groups", methods=["GET"])

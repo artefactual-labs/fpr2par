@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object("config")
 db = SQLAlchemy(app)
 
-# change on deploy
+# change on deploy. deploy using https.
 app.config["BASIC_AUTH_USERNAME"] = "admin"
 app.config["BASIC_AUTH_PASSWORD"] = "admin"
 
