@@ -21,12 +21,12 @@ def adddata():
     start = datetime.now()
 
     # make sure files are sorted by name so data is entered in correct order
-    for file in sorted(os.listdir("sourceJSON")):
+    for file in sorted(os.listdir("fprJSON")):
 
         if file[-5:] == ".json":
             print("processing file: " + file)
 
-            with open("sourceJSON/" + file, "r") as jsonFile:
+            with open("fprJSON/" + file, "r") as jsonFile:
                 data = jsonFile.read()
 
             jsonObjects = json.loads(data)
