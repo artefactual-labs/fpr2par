@@ -1,4 +1,5 @@
 from flask import Flask, render_template, flash, redirect, request, jsonify
+from flask_basicauth import BasicAuth
 from fpr2par import app, db
 import os
 from .create_fpr_database import createdbase
@@ -16,6 +17,8 @@ from .models import (
     fpr_commands,
     fpr_rules,
 )
+
+basic_auth = BasicAuth(app)
 
 
 @app.route("/", methods=["GET"])
@@ -56,6 +59,12 @@ def home():
         rules=rules,
         apiUrl=apiUrl,
     )
+
+
+@app.route("/admin", methods=["GET"])
+@basic_auth.required
+def admin():
+    return render_template("admin.html")
 
 
 @app.route("/add_fpr_data", methods=["GET"])
