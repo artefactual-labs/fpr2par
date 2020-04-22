@@ -9,8 +9,8 @@ Migrate Archivematica Format Policy Registry ([FPR](https://www.archivematica.or
   `source venv/bin/activate`  
 * Install requirements:  
   `pip install -r requirements.txt`
-* Change admin password
-  `fpr2par/__init.py__`        
+* Change admin password  
+  `fpr2par/__init.py__`      
 * Run (on localhost, port 5000):  
   `export FLASK_APP=run.py`  
   `flask run`  
