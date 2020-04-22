@@ -217,3 +217,27 @@ def fileformat(id):
         "type": [group.description],
     }
     return jsonify(response)
+
+
+@app.route("/api/par/file-formats", methods=["GET"])
+def fileformats():
+    versions = fpr_format_versions.query.all()
+    response = []
+    for version in versions:
+        format = fpr_formats.query.get(version.format)
+        group = fpr_format_groups.query.get(format.group)
+        newFormat = {
+            "name": version.description,
+            "localLastModifiedDate": str(version.last_modified),
+            "version": version.version,
+            "id": {
+                "guid": version.uuid,
+                "name": format.description,
+                "namespace": "https://archivematica.org",
+            },
+            "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID",},
+            "type": [group.description],
+        }
+        response.append(newFormat)
+
+    return jsonify(response)
