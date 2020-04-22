@@ -5,41 +5,53 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../static/bootstrap.min.css">
+    <script type="text/javascript" src="../static/jquery-3.5.0.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/sorttable.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="/"><img src="../static/fpr2par_logo.png"></a>
+
     <div class="navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_format_groups">Format groups</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_formats">Formats</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_format_versions">Format versions</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_id_tools">ID tools</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_id_commands">ID commands</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_id_rules">ID rules</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_tools">Tools</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_commands">Commands</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/fpr_rules">Rules</a>
-        </li>
-      </ul>
+
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Browse FPR data
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="/fpr_format_groups">Format groups</a>
+          <a class="dropdown-item" href="/fpr_formats">Formats</a>
+          <a class="dropdown-item" href="/fpr_format_versions">Format versions</a>
+          <a class="dropdown-item" href="/fpr_id_tools">ID tools</a>
+          <a class="dropdown-item" href="/fpr_id_commands">ID commands</a>
+          <a class="dropdown-item" href="/fpr_id_rules">ID rules</a>
+          <a class="dropdown-item" href="/fpr_tools">Tools</a>
+          <a class="dropdown-item" href="/fpr_commands">Commands</a>
+          <a class="dropdown-item" href="/fpr_rules">Rules</a>
+        </div>
+      </div>
+
+      <div class="dropdown" style="padding-left: 10px;">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          PAR API requests
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="api/par/format-families">{{apiUrl}}/format-families</a>
+          <a class="dropdown-item" href="api/par/format-families/<id>"><id>{{apiUrl}}/format-families/{guid}</a>
+          <a class="dropdown-item" href="api/par/file-formats">{{apiUrl}}/file-formats</a>
+          <a class="dropdown-item" href="api/par/file-formats/36800d63-1bb5-4324-ba8c-90e222eeddbc">{{apiUrl}}/file-formats/{guid}</a>
+          <a class="dropdown-item" href="api/par/preservation-action-types">{{apiUrl}}/preservation-action-types</a>
+          <a class="dropdown-item" href="api/par/preservation-action-types/<id>">{{apiUrl}}/preservation-action-types/{guid}</a>
+          <a class="dropdown-item" href="api/par/preservation-actions">{{apiUrl}}/preservation-actions</a>
+          <a class="dropdown-item" href="api/par/preservation-actions/<id>">{{apiUrl}}/preservation-actions/{guid}</a>
+          <a class="dropdown-item" href="api/par/tools">{{apiUrl}}/tools</a>
+          <a class="dropdown-item" href="api/par/tools/<id>">{{apiUrl}}/tools/{guid}</a>
+          <a class="dropdown-item" href="api/par/business-rules/<id>">{{apiUrl}}/business-rules/{guid}</a>          
+        </div>
+      </div>
+
+
     </div>
   <span style="font-style: italic" class="navbar-text">Move Archivematica FPR data to a PAR API</span>
 </nav>
