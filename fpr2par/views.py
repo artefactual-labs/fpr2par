@@ -199,15 +199,27 @@ def fprRule(id):
     return render_template("fpr_rule.html", rules=rules, command=command, count=count)
 
 
+@app.route("/api/par/format-families/<guid>", methods=["GET"])
+def formatFamily(guid):
+    return jsonify({"response": "coming soon"})
+
+
 @app.route("/api/par/format-families", methods=["GET"])
 def formatFamilies():
-    # fix me
-    """
     formatGroups = fpr_format_groups.query.all()
-    response = []
+    response = {}
+    response["formatFamilies"] = []
+    newGroups = {}
     for formatGroup in formatGroups:
         formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
-        newGroup = []
+        newFormats = []
+        for format in formats:
+            newFormat = {
+                "guid": format.uuid,
+                "name": format.description,
+                "namespace": "https://archivematica.org",
+            }
+            newFormats.append(newFormat)
         newGroup = {
             "familyType": "Format Group",
             "id": {
@@ -215,30 +227,16 @@ def formatFamilies():
                 "name": formatGroup.description,
                 "namespace": "https://archivematica.org",
             },
-            "fileFormats": "",
+            "fileFormats": newFormats,
         }
-        for format in formats:
-            newFormat = {
-                "guid": format.uuid,
-                "name": format.description,
-                "namespace": "https://archivematica.org",
-            }
-            newGroup.append(newFormat)
-        response.append(newGroup)
+        response["formatFamilies"].append(newGroup)
 
     return jsonify(response)
-    """
-    return jsonify({"response": "coming soon"})
 
 
-@app.route("/api/par/format-families/<id>", methods=["GET"])
-def formatFamily(id):
-    return jsonify({"response": "coming soon"})
-
-
-@app.route("/api/par/file-formats/<id>", methods=["GET"])
-def fileformat(id):
-    version = fpr_format_versions.query.get(id)
+@app.route("/api/par/file-formats/<guid>", methods=["GET"])
+def fileformat(guid):
+    version = fpr_format_versions.query.get(guid)
     format = fpr_formats.query.get(version.format)
     group = fpr_format_groups.query.get(format.group)
     response = {
@@ -259,7 +257,8 @@ def fileformat(id):
 @app.route("/api/par/file-formats", methods=["GET"])
 def fileformats():
     versions = fpr_format_versions.query.all()
-    response = []
+    response = {}
+    response["fileFormats"] = []
     for version in versions:
         format = fpr_formats.query.get(version.format)
         group = fpr_format_groups.query.get(format.group)
@@ -275,7 +274,7 @@ def fileformats():
             "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID",},
             "type": [group.description],
         }
-        response.append(newFormat)
+        response["fileFormats"].append(newFormat)
 
     return jsonify(response)
 
@@ -285,8 +284,8 @@ def preservationActionTypes():
     return jsonify({"response": "coming soon"})
 
 
-@app.route("/api/par/preservation-action-types/<id>", methods=["GET"])
-def preservationActionType(id):
+@app.route("/api/par/preservation-action-types/<guid>", methods=["GET"])
+def preservationActionType(guid):
     return jsonify({"response": "coming soon"})
 
 
@@ -295,8 +294,8 @@ def preservationActions():
     return jsonify({"response": "coming soon"})
 
 
-@app.route("/api/par/preservation-actions/<id>", methods=["GET"])
-def preservationAction(id):
+@app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
+def preservationAction(guid):
     return jsonify({"response": "coming soon"})
 
 
@@ -305,11 +304,11 @@ def tools():
     return jsonify({"response": "coming soon"})
 
 
-@app.route("/api/par/tools/<id>", methods=["GET"])
-def tool(id):
+@app.route("/api/par/tools/<guid>", methods=["GET"])
+def tool(guid):
     return jsonify({"response": "coming soon"})
 
 
-@app.route("/api/par/business-rules/<id>", methods=["GET"])
-def businessRule(id):
+@app.route("/api/par/business-rules/<guid>", methods=["GET"])
+def businessRule(guid):
     return jsonify({"response": "coming soon"})
