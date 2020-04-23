@@ -259,7 +259,8 @@ def fileformat(id):
 @app.route("/api/par/file-formats", methods=["GET"])
 def fileformats():
     versions = fpr_format_versions.query.all()
-    response = []
+    response = {}
+    response["fileFormats"] = []
     for version in versions:
         format = fpr_formats.query.get(version.format)
         group = fpr_format_groups.query.get(format.group)
@@ -275,7 +276,7 @@ def fileformats():
             "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID",},
             "type": [group.description],
         }
-        response.append(newFormat)
+        response["fileFormats"].append(newFormat)
 
     return jsonify(response)
 
