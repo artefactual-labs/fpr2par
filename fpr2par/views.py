@@ -199,6 +199,43 @@ def fprRule(id):
     return render_template("fpr_rule.html", rules=rules, command=command, count=count)
 
 
+@app.route("/api/par/format-families", methods=["GET"])
+def formatFamilies():
+    # fix me
+    """
+    formatGroups = fpr_format_groups.query.all()
+    response = []
+    for formatGroup in formatGroups:
+        formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
+        newGroup = []
+        newGroup = {
+            "familyType": "Format Group",
+            "id": {
+                "guid": formatGroup.uuid,
+                "name": formatGroup.description,
+                "namespace": "https://archivematica.org",
+            },
+            "fileFormats": "",
+        }
+        for format in formats:
+            newFormat = {
+                "guid": format.uuid,
+                "name": format.description,
+                "namespace": "https://archivematica.org",
+            }
+            newGroup.append(newFormat)
+        response.append(newGroup)
+
+    return jsonify(response)
+    """
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/format-families/<id>", methods=["GET"])
+def formatFamily(id):
+    return jsonify({"response": "coming soon"})
+
+
 @app.route("/api/par/file-formats/<id>", methods=["GET"])
 def fileformat(id):
     version = fpr_format_versions.query.get(id)
@@ -241,3 +278,38 @@ def fileformats():
         response.append(newFormat)
 
     return jsonify(response)
+
+
+@app.route("/api/par/preservation-action-types", methods=["GET"])
+def preservationActionTypes():
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/preservation-action-types/<id>", methods=["GET"])
+def preservationActionType(id):
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/preservation-actions", methods=["GET"])
+def preservationActions():
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/preservation-actions/<id>", methods=["GET"])
+def preservationAction(id):
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/tools", methods=["GET"])
+def tools():
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/tools/<id>", methods=["GET"])
+def tool(id):
+    return jsonify({"response": "coming soon"})
+
+
+@app.route("/api/par/business-rules/<id>", methods=["GET"])
+def businessRule(id):
+    return jsonify({"response": "coming soon"})
