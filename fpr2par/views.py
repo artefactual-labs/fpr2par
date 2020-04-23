@@ -201,7 +201,7 @@ def fprRule(id):
 
 @app.route("/api/par/format-families/<guid>", methods=["GET"])
 def formatFamily(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/format-families", methods=["GET"])
@@ -281,34 +281,34 @@ def fileformats():
 
 @app.route("/api/par/preservation-action-types", methods=["GET"])
 def preservationActionTypes():
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/preservation-action-types/<guid>", methods=["GET"])
 def preservationActionType(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
 def preservationActions():
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
 def preservationAction(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/tools", methods=["GET"])
 def tools():
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/tools/<guid>", methods=["GET"])
 def tool(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/business-rules/<guid>", methods=["GET"])
 def businessRule(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
