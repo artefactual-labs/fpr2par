@@ -18,6 +18,8 @@ from .models import (
     fpr_rules,
 )
 
+from .helpers import _parse_offset_limit
+
 basic_auth = BasicAuth(app)
 
 
@@ -236,6 +238,12 @@ def formatFamilies():
 
 @app.route("/api/par/file-formats/<guid>", methods=["GET"])
 def fileformat(guid):
+    """Given a file format GUID display information about it in the registry.
+
+        * <uri>/api/par/file-formats/43d60a83-929a-45b4-9197-46177f85d095
+
+    """
+
     version = fpr_format_versions.query.get(guid)
     format = fpr_formats.query.get(version.format)
     group = fpr_format_groups.query.get(format.group)
@@ -279,7 +287,18 @@ def fileformat(guid):
 
 @app.route("/api/par/file-formats", methods=["GET"])
 def fileformats():
-    versions = fpr_format_versions.query.all()
+    """Display all file formats in the registry:
+
+        * <uri>/api/par/file-formats/
+
+    Alternatively, limit by count and offset:
+
+        * <uri>/api/par/file-formats?limit=1&offset=10
+
+    """
+    offset, limit = _parse_offset_limit(request)
+
+    versions = fpr_format_versions.query.all()[offset:limit]
     response = {}
     response["fileFormats"] = []
 
