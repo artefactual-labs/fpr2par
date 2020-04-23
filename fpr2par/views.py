@@ -207,10 +207,19 @@ def formatFamily(guid):
 @app.route("/api/par/format-families", methods=["GET"])
 def formatFamilies():
     formatGroups = fpr_format_groups.query.all()
-    response = []
+    response = {}
+    response["formatFamilies"] = []
+    newGroups = {}
     for formatGroup in formatGroups:
         formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
-        newGroup = []
+        newFormats = []
+        for format in formats:
+            newFormat = {
+                "guid": format.uuid,
+                "name": format.description,
+                "namespace": "https://archivematica.org",
+            }
+            newFormats.append(newFormat)
         newGroup = {
             "familyType": "Format Group",
             "id": {
@@ -218,16 +227,9 @@ def formatFamilies():
                 "name": formatGroup.description,
                 "namespace": "https://archivematica.org",
             },
-            "fileFormats": "",
+            "fileFormats": newFormats,
         }
-        for format in formats:
-            newFormat = {
-                "guid": format.uuid,
-                "name": format.description,
-                "namespace": "https://archivematica.org",
-            }
-            newGroup.append(newFormat)
-        response.append(newGroup)
+        response["formatFamilies"].append(newGroup)
 
     return jsonify(response)
 
