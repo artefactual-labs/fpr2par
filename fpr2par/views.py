@@ -270,8 +270,8 @@ def fileformat(guid):
         "localLastModifiedDate": str(version.last_modified),
         "version": updatedVersion,
         "id": id,
-        "identifiers": identifier,
-        "type": [group.description],
+        "identifiers": [identifier],
+        "types": [group.description],
     }
 
     return jsonify(response)
@@ -316,8 +316,8 @@ def fileformats():
             "localLastModifiedDate": str(version.last_modified),
             "version": updatedVersion,
             "id": id,
-            "identifiers": identifier,
-            "type": [group.description],
+            "identifiers": [identifier],
+            "types": [group.description],
         }
 
         response["fileFormats"].append(newFormat)
