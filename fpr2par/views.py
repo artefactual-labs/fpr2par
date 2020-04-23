@@ -201,7 +201,7 @@ def fprRule(id):
 
 @app.route("/api/par/format-families/<guid>", methods=["GET"])
 def formatFamily(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/format-families", methods=["GET"])
@@ -239,18 +239,41 @@ def fileformat(guid):
     version = fpr_format_versions.query.get(guid)
     format = fpr_formats.query.get(version.format)
     group = fpr_format_groups.query.get(format.group)
+
+    if version.pronom_id != "":
+        id = {
+            "guid": version.uuid,
+            "name": version.pronom_id,
+            "namespace": "http://www.nationalarchives.gov.uk",
+        }
+        identifier = {
+            "identifier": version.pronom_id,
+            "identifierType": "PUID",
+        }
+    else:
+        id = {
+            "guid": version.uuid,
+            "name": version.description,
+            "namespace": "https://archivematica.org",
+        }
+        identifier = {
+            "identifier": version.description,
+            "identifierType": "Archivematica description",
+        }
+    if version.version == "":
+        updatedVersion = None
+    else:
+        updatedVersion = version.version
+
     response = {
         "name": version.description,
         "localLastModifiedDate": str(version.last_modified),
-        "version": version.version,
-        "id": {
-            "guid": version.uuid,
-            "name": format.description,
-            "namespace": "https://archivematica.org",
-        },
-        "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID"},
-        "type": [group.description],
+        "version": updatedVersion,
+        "id": id,
+        "identifiers": [identifier],
+        "types": [group.description],
     }
+
     return jsonify(response)
 
 
@@ -259,21 +282,44 @@ def fileformats():
     versions = fpr_format_versions.query.all()
     response = {}
     response["fileFormats"] = []
+
     for version in versions:
         format = fpr_formats.query.get(version.format)
         group = fpr_format_groups.query.get(format.group)
+        if version.pronom_id != "":
+            id = {
+                "guid": version.uuid,
+                "name": version.pronom_id,
+                "namespace": "http://www.nationalarchives.gov.uk",
+            }
+            identifier = {
+                "identifier": version.pronom_id,
+                "identifierType": "PUID",
+            }
+        else:
+            id = {
+                "guid": version.uuid,
+                "name": version.description,
+                "namespace": "https://archivematica.org",
+            }
+            identifier = {
+                "identifier": version.description,
+                "identifierType": "Archivematica description",
+            }
+        if version.version == "":
+            updatedVersion = None
+        else:
+            updatedVersion = version.version
+
         newFormat = {
             "name": version.description,
             "localLastModifiedDate": str(version.last_modified),
-            "version": version.version,
-            "id": {
-                "guid": version.uuid,
-                "name": format.description,
-                "namespace": "https://archivematica.org",
-            },
-            "identifiers": {"identifier": version.pronom_id, "identifierType": "PUID",},
-            "type": [group.description],
+            "version": updatedVersion,
+            "id": id,
+            "identifiers": [identifier],
+            "types": [group.description],
         }
+
         response["fileFormats"].append(newFormat)
 
     return jsonify(response)
@@ -281,34 +327,34 @@ def fileformats():
 
 @app.route("/api/par/preservation-action-types", methods=["GET"])
 def preservationActionTypes():
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/preservation-action-types/<guid>", methods=["GET"])
 def preservationActionType(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
 def preservationActions():
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
 def preservationAction(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/tools", methods=["GET"])
 def tools():
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/tools/<guid>", methods=["GET"])
 def tool(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
 
 
 @app.route("/api/par/business-rules/<guid>", methods=["GET"])
 def businessRule(guid):
-    return jsonify({"response": "coming soon"})
+    return jsonify({"response": "Not implemented"})
