@@ -18,8 +18,22 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 * Select "Admin" from navigation menu
 * Press "Create FPR database" button
 * Press "Load FPR data from fixtures" button (takes approx 2 mins)
+* See instructions further below if you want to load FPR data from your own instance of Archivematica instead of using the default values from the latest release
 * Check CLI for import progress
 * Return to UI to browse FPR data
 * See homepage for PAR API instructions
 
 ![screencap](fpr2par-demo.png)
+
+
+# Load FPR data from your own instance of Archivematica
+* Run the following task:  
+	`docker-compose run \
+	--rm \
+	--entrypoint /src/dashboard/src/manage.py \
+		archivematica-dashboard \
+			dumpdata --output /var/archivematica/sharedDirectory/tmp/fpr.json fpr`
+* Relace the "fpr.json" in the fprJSON/ directory with your new fpr.json files
+* From the "Admin" menu, if you've already created a FPR database, press the "Delete FPR Database" button
+* Press the "Create FPR database" button
+* Press the "Load FPR data from fixtures" button
