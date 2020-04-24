@@ -1,5 +1,5 @@
 {
-  "$id": "http://www.parcore.org/schema/types.json/#",
+  "$id": "https://raw.githubusercontent.com/JiscSD/rdss-par/master/schema/types.json#",
   "$schema": "http://json-schema.org/draft-06/schema#",
   "definitions": {
     "formatFamily": {
