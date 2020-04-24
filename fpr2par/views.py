@@ -555,3 +555,8 @@ def tools():
 @app.route("/api/par/business-rules/<guid>", methods=["GET"])
 def businessRule(guid):
     return jsonify({"response": "Not implemented"})
+
+
+@app.route("/api/par/business-rules", methods=["GET"])
+def businessRules():
+    return jsonify({"response": "Not implemented"})
