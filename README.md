@@ -42,6 +42,7 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 * Otherwise, run the following task:  
   `sudo su -s /bin/bash archivematica  
    export PYTHONPATH=/usr/lib/archivematica/archivematicaCommon:/usr/share/archivematica/dashboard  
+
    set -o allexport  
    source /etc/default/archivematica-dashboard  
    set +o allexport  
