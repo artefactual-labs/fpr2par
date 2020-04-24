@@ -40,13 +40,12 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
         `archivematica-dashboard \`  
             `dumpdata --output /var/archivematica/sharedDirectory/tmp/fpr2.json fpr`
 * Otherwise, run the following task:  
-  `sudo su -s /bin/bash archivematica  
-   export PYTHONPATH=/usr/lib/archivematica/archivematicaCommon:/usr/share/archivematica/dashboard  
-
-   set -o allexport  
-   source /etc/default/archivematica-dashboard  
-   set +o allexport  
-   /usr/share/archivematica/dashboard/manage.py dumpdata --output /var/archivematica/sharedDirectory/fpr2.json fpr`
+  `sudo su -s /bin/bash archivematica`  
+  `export PYTHONPATH=/usr/lib/archivematica/archivematicaCommon:/usr/share/archivematica/dashboard`  
+  `set -o allexport`  
+  `source /etc/default/archivematica-dashboard`  
+  `set +o allexport`  
+  `/usr/share/archivematica/dashboard/manage.py dumpdata --output /var/archivematica/sharedDirectory/fpr2.json fpr`
 * Relace the "fpr2.json" in the "fpr2par/sourceJSON/"" directory with your newly generated fpr2.json file
 * From the "Admin" menu, if you've already created a fpr2par database, press the "Delete fpr2par Database" button
 * Press the "Create fpr2par database" button
