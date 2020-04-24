@@ -4,7 +4,6 @@ from flask import flash
 
 
 def createdbase():
-    print(app.db_name)
     if os.path.isfile(app.db_name):
         flash("database already exists")
     else:
