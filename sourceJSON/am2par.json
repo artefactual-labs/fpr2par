@@ -101,16 +101,6 @@
     },
     {
         "fields": {
-          "uuid": "c78496fe-5496-4533-a590-c9d48fecfbb4",
-          "name": "ingestion",
-          "namespace": "https://archivematica.org",
-          "label": "ingestion",
-          "lastmodified": "2020-04-23T12:0:0"
-        },
-        "model": "par.preservationActionTypes"
-    },
-    {
-        "fields": {
           "uuid": "0124d5f1-f275-4711-9248-c219acd7a7ed",
           "name": "placement in backlog",
           "namespace": "https://archivematica.org",
@@ -125,16 +115,6 @@
           "name": "removal from backlog",
           "namespace": "https://archivematica.org",
           "label": "removal from backlog",
-          "lastmodified": "2020-04-23T12:0:0"
-        },
-        "model": "par.preservationActionTypes"
-    },
-    {
-        "fields": {
-          "uuid": "eff79484-19d5-4aa6-aa52-9e55dd6639e9",
-          "name": "ingestion",
-          "namespace": "https://archivematica.org",
-          "label": "ingestion",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
