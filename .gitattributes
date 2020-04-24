@@ -1,0 +1,2 @@
+# Don't display bulky PAR schema files by default
+schema/*.json linguist-generated=true

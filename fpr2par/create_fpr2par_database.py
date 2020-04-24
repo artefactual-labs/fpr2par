@@ -1,6 +1,8 @@
 import os
-from fpr2par import app, db
+
 from flask import flash
+
+from fpr2par import app, db
 
 
 def createdbase():
