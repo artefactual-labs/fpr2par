@@ -201,7 +201,38 @@ def fprRule(id):
 
 @app.route("/api/par/format-families/<guid>", methods=["GET"])
 def formatFamily(guid):
-    return jsonify({"response": "Not implemented"})
+    formatGroup = fpr_format_groups.query.get(guid)
+    formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
+    newFormatVersions = []
+    for format in formats:
+        formatVersions = fpr_format_versions.query.filter_by(format=format.uuid).all()
+
+        for formatVersion in formatVersions:
+            if formatVersion.pronom_id != "":
+                newFormatVersion = {
+                    "guid": formatVersion.uuid,
+                    "name": formatVersion.pronom_id,
+                    "namespace": "http://www.nationalarchives.gov.uk",
+                }
+            else:
+                newFormatVersion = {
+                    "guid": formatVersion.uuid,
+                    "name": formatVersion.description,
+                    "namespace": "https://www.archivematica.org",
+                }
+            newFormatVersions.append(newFormatVersion)
+
+        response = {
+            "familyType": "Format Group",
+            "id": {
+                "guid": formatGroup.uuid,
+                "name": formatGroup.description,
+                "namespace": "https://archivematica.org",
+            },
+            "fileFormats": newFormatVersions,
+        }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/format-families", methods=["GET"])
@@ -209,13 +240,15 @@ def formatFamilies():
     formatGroups = fpr_format_groups.query.all()
     response = {}
     response["formatFamilies"] = []
+
     for formatGroup in formatGroups:
         formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
+        newFormatVersions = []
         for format in formats:
             formatVersions = fpr_format_versions.query.filter_by(
                 format=format.uuid
             ).all()
-            newFormatVersions = []
+
             for formatVersion in formatVersions:
                 if formatVersion.pronom_id != "":
                     newFormatVersion = {
@@ -229,7 +262,6 @@ def formatFamilies():
                         "name": formatVersion.description,
                         "namespace": "https://www.archivematica.org",
                     }
-
                 newFormatVersions.append(newFormatVersion)
 
         newGroup = {
@@ -239,7 +271,7 @@ def formatFamilies():
                 "name": formatGroup.description,
                 "namespace": "https://archivematica.org",
             },
-            "fileFormats": [newFormatVersions],
+            "fileFormats": newFormatVersions,
         }
         response["formatFamilies"].append(newGroup)
 
