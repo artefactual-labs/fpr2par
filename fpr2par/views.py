@@ -391,12 +391,69 @@ def preservationAction(guid):
 
 @app.route("/api/par/tools", methods=["GET"])
 def tools():
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    response["tools"] = []
+    # only include enabled tools
+    tools = fpr_tools.query.filter_by(enabled=True).all()
+    for tool in tools:
+        newTool = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+        response["tools"].append(newTool)
+
+    # include Identification tools
+    # only include enabled tools
+    tools = fpr_id_tools.query.filter_by(enabled=True).all()
+    for tool in tools:
+        newTool = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+        response["tools"].append(newTool)
+
+    return jsonify(response)
 
 
 @app.route("/api/par/tools/<guid>", methods=["GET"])
 def tool(guid):
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    tool = fpr_tools.query.get(guid)
+    if tool is not None:
+        response = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+    else:
+        # check whether the GUID matches an Identification tool
+        tool = fpr_id_tools.query.get(guid)
+        if tool is not None:
+            response = {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/business-rules/<guid>", methods=["GET"])
