@@ -283,9 +283,10 @@ def formatFamilies():
 
 @app.route("/api/par/file-formats/<guid>", methods=["GET"])
 def fileformat(guid):
-    """Given a file format GUID display information about it in the registry.
+    """
+    Given a file format's GUID, display information about it from the Format Policy Registry
 
-        * <uri>/api/par/file-formats/43d60a83-929a-45b4-9197-46177f85d095
+    * <uri>/api/par/file-formats/43d60a83-929a-45b4-9197-46177f85d095
 
     """
 
@@ -332,15 +333,16 @@ def fileformat(guid):
 
 @app.route("/api/par/file-formats", methods=["GET"])
 def fileformats():
-    """Display all file formats in the registry:
+    """
+    Display all file formats in the Format Policy Registry
 
-        * <uri>/api/par/file-formats/
+    * <uri>/api/par/file-formats/
 
     Alternatively, limit by count and offset:
 
-        * <uri>/api/par/file-formats?limit=1&offset=10
-
+    * <uri>/api/par/file-formats?limit=1&offset=10
     """
+
     offset, limit = _parse_offset_limit(request)
 
     versions = fpr_format_versions.query.all()[offset:limit]
