@@ -2,9 +2,9 @@ from flask import Flask, render_template, flash, redirect, request, jsonify
 from flask_basicauth import BasicAuth
 from fpr2par import app, db
 import os
-from .create_fpr_database import createdbase
-from .add_fpr_data import adddata
-from .delete_fpr_database import deletedbase
+from .create_fpr2par_database import createdbase
+from .add_fpr2par_data import adddata
+from .delete_fpr2par_database import deletedbase
 from datetime import datetime
 from .models import (
     fpr_formats,
@@ -16,6 +16,7 @@ from .models import (
     fpr_tools,
     fpr_commands,
     fpr_rules,
+    par_preservation_action_types,
 )
 
 basic_auth = BasicAuth(app)
@@ -67,25 +68,25 @@ def admin():
     return render_template("admin.html")
 
 
-@app.route("/create_fpr_database", methods=["GET"])
+@app.route("/create_fpr2par_database", methods=["GET"])
 @basic_auth.required
-def createFPRdbase():
+def createfpr2pardbase():
     createdbase()
     return redirect("/admin")
 
 
-@app.route("/add_fpr_data", methods=["GET"])
+@app.route("/add_fpr2par_data", methods=["GET"])
 @basic_auth.required
 def addFPRdata():
     duration = adddata()
-    flash("FPR data loaded")
+    flash("FPR and PAR data loaded")
     flash("Import duration: " + duration)
     return redirect("/admin")
 
 
-@app.route("/delete_fpr_database", methods=["GET"])
+@app.route("/delete_fpr2par_database", methods=["GET"])
 @basic_auth.required
-def deleteFPRdata():
+def deletedfpr2pardbase():
     deletedbase()
     return redirect("/admin")
 
@@ -201,7 +202,38 @@ def fprRule(id):
 
 @app.route("/api/par/format-families/<guid>", methods=["GET"])
 def formatFamily(guid):
-    return jsonify({"response": "Not implemented"})
+    formatGroup = fpr_format_groups.query.get(guid)
+    formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
+    newFormatVersions = []
+    for format in formats:
+        formatVersions = fpr_format_versions.query.filter_by(format=format.uuid).all()
+
+        for formatVersion in formatVersions:
+            if formatVersion.pronom_id != "":
+                newFormatVersion = {
+                    "guid": formatVersion.uuid,
+                    "name": formatVersion.pronom_id,
+                    "namespace": "http://www.nationalarchives.gov.uk",
+                }
+            else:
+                newFormatVersion = {
+                    "guid": formatVersion.uuid,
+                    "name": formatVersion.description,
+                    "namespace": "https://www.archivematica.org",
+                }
+            newFormatVersions.append(newFormatVersion)
+
+        response = {
+            "familyType": "Format Group",
+            "id": {
+                "guid": formatGroup.uuid,
+                "name": formatGroup.description,
+                "namespace": "https://archivematica.org",
+            },
+            "fileFormats": newFormatVersions,
+        }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/format-families", methods=["GET"])
@@ -209,17 +241,30 @@ def formatFamilies():
     formatGroups = fpr_format_groups.query.all()
     response = {}
     response["formatFamilies"] = []
-    newGroups = {}
+
     for formatGroup in formatGroups:
         formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
-        newFormats = []
+        newFormatVersions = []
         for format in formats:
-            newFormat = {
-                "guid": format.uuid,
-                "name": format.description,
-                "namespace": "https://archivematica.org",
-            }
-            newFormats.append(newFormat)
+            formatVersions = fpr_format_versions.query.filter_by(
+                format=format.uuid
+            ).all()
+
+            for formatVersion in formatVersions:
+                if formatVersion.pronom_id != "":
+                    newFormatVersion = {
+                        "guid": formatVersion.uuid,
+                        "name": formatVersion.pronom_id,
+                        "namespace": "http://www.nationalarchives.gov.uk",
+                    }
+                else:
+                    newFormatVersion = {
+                        "guid": formatVersion.uuid,
+                        "name": formatVersion.description,
+                        "namespace": "https://www.archivematica.org",
+                    }
+                newFormatVersions.append(newFormatVersion)
+
         newGroup = {
             "familyType": "Format Group",
             "id": {
@@ -227,7 +272,7 @@ def formatFamilies():
                 "name": formatGroup.description,
                 "namespace": "https://archivematica.org",
             },
-            "fileFormats": newFormats,
+            "fileFormats": newFormatVersions,
         }
         response["formatFamilies"].append(newGroup)
 
@@ -327,12 +372,37 @@ def fileformats():
 
 @app.route("/api/par/preservation-action-types", methods=["GET"])
 def preservationActionTypes():
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    response["preservationActionTypes"] = []
+    actionTypes = par_preservation_action_types.query.all()
+    for actionType in actionTypes:
+        newAction = {
+            "id": {
+                "guid": actionType.uuid,
+                "name": actionType.name,
+                "namespace": actionType.namespace,
+            },
+            "label": actionType.label,
+            "localLastModifiedDate": str(actionType.last_modified),
+        }
+        response["preservationActionTypes"].append(newAction)
+    return jsonify(response)
 
 
 @app.route("/api/par/preservation-action-types/<guid>", methods=["GET"])
 def preservationActionType(guid):
-    return jsonify({"response": "Not implemented"})
+    actionType = par_preservation_action_types.query.get(guid)
+    response = {
+        "id": {
+            "guid": actionType.uuid,
+            "name": actionType.name,
+            "namespace": actionType.namespace,
+        },
+        "label": actionType.label,
+        "localLastModifiedDate": str(actionType.last_modified),
+    }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
@@ -347,12 +417,69 @@ def preservationAction(guid):
 
 @app.route("/api/par/tools", methods=["GET"])
 def tools():
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    response["tools"] = []
+    # only include enabled tools
+    tools = fpr_tools.query.filter_by(enabled=True).all()
+    for tool in tools:
+        newTool = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+        response["tools"].append(newTool)
+
+    # include Identification tools
+    # only include enabled tools
+    tools = fpr_id_tools.query.filter_by(enabled=True).all()
+    for tool in tools:
+        newTool = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+        response["tools"].append(newTool)
+
+    return jsonify(response)
 
 
 @app.route("/api/par/tools/<guid>", methods=["GET"])
 def tool(guid):
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    tool = fpr_tools.query.get(guid)
+    if tool is not None:
+        response = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+    else:
+        # check whether the GUID matches an Identification tool
+        tool = fpr_id_tools.query.get(guid)
+        if tool is not None:
+            response = {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/business-rules/<guid>", methods=["GET"])

@@ -9,6 +9,7 @@ from .models import (
     fpr_tools,
     fpr_commands,
     fpr_rules,
+    par_preservation_action_types,
 )
 import json
 from datetime import datetime
@@ -21,12 +22,57 @@ def adddata():
     start = datetime.now()
 
     # make sure files are sorted by name so data is entered in correct order
-    for file in sorted(os.listdir("fprJSON")):
+    for file in sorted(os.listdir("sourceJSON")):
+        if file == "am2par.json":
+            with open("sourceJSON/" + file, "r") as jsonFile:
+                data = jsonFile.read()
 
-        if file[-5:] == ".json":
+            jsonObjects = json.loads(data)
+
+            for object in jsonObjects:
+
+                if object["model"] == "par.preservationActionTypes":
+                    output = object["model"] + " " + object["fields"]["label"]
+
+                    preservationActionType = par_preservation_action_types(
+                        uuid=object["fields"]["uuid"],
+                        name=object["fields"]["name"],
+                        namespace=object["fields"]["namespace"],
+                        label=object["fields"]["label"],
+                        last_modified=datetime.strptime(
+                            object["fields"]["lastmodified"], "%Y-%m-%dT%H:%M:%S"
+                        ),
+                    )
+
+                    if (
+                        par_preservation_action_types.query.get(
+                            object["fields"]["uuid"]
+                        )
+                        is not None
+                    ):
+                        par_preservation_action_types.query.filter_by(
+                            uuid=object["fields"]["uuid"]
+                        ).update(
+                            {
+                                "name": object["fields"]["name"],
+                                "namespace": object["fields"]["namespace"],
+                                "label": object["fields"]["label"],
+                                "last_modified": datetime.strptime(
+                                    object["fields"]["lastmodified"],
+                                    "%Y-%m-%dT%H:%M:%S",
+                                ),
+                            }
+                        )
+                        print("updating " + output)
+                    else:
+                        print("adding " + output)
+                        db.session.add(preservationActionType)
+                    db.session.commit()
+
+        elif file[-5:] == ".json":
             print("processing file: " + file)
 
-            with open("fprJSON/" + file, "r") as jsonFile:
+            with open("sourceJSON/" + file, "r") as jsonFile:
                 data = jsonFile.read()
 
             jsonObjects = json.loads(data)

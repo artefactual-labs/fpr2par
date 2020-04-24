@@ -332,3 +332,21 @@ class fpr_rules(db.Model):
 
     def __repr__(self):
         return format(self.purpose)
+
+
+class par_preservation_action_types(db.Model):
+    uuid = db.Column(db.String(36), index=True, primary_key=True)
+    name = db.Column(db.String(255))
+    namespace = db.Column(db.String(255))
+    label = db.Column(db.String(255))
+    last_modified = db.Column(db.DateTime())
+
+    def __init__(self, uuid, name, namespace, label, last_modified):
+        self.uuid = uuid
+        self.name = name
+        self.namespace = namespace
+        self.label = label
+        self.last_modified = last_modified
+
+    def __repr__(self):
+        return format(self.label)
