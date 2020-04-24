@@ -11,10 +11,14 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
   `pip install -r requirements.txt`
 * Change admin password  
   `fpr2par/__init.py__`      
-* Run (on localhost, port 5000):  
-  `export FLASK_APP=run.py`  
+* Export the Flask application environment variable:  
+  `export FLASK_APP=run.py`
+* To run the application as a local development server:  
   `flask run`  
-* Go to `localhost:5000` in browser to confirm that app is running
+* Go to `localhost:5000` in a browser to confirm that the app is running
+* Otherwise, to run the application on a publicly accessible server:  
+  `flask run --host=0.0.0.0`
+* Go to `[your IP]:5000` in a browser to confirm that the app is running
 * Select "Admin" from navigation menu
 * Press "Create fpr2par database" button
 * Press "Load data from fixtures" button (takes approx 2 mins)
@@ -29,13 +33,20 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 
 
 # Load FPR data from your own instance of Archivematica
-* Run the following task:  
+* If you are using a Docker deployment of Archivematica, run the following task:  
   `docker-compose run \`  
     `--rm \`  
     `--entrypoint /src/dashboard/src/manage.py \`  
         `archivematica-dashboard \`  
             `dumpdata --output /var/archivematica/sharedDirectory/tmp/fpr2.json fpr`
+* Otherwise, run the following task:  
+  `sudo su -s /bin/bash archivematica`  
+  `export PYTHONPATH=/usr/lib/archivematica/archivematicaCommon:/usr/share/archivematica/dashboard`  
+  `set -o allexport`  
+  `source /etc/default/archivematica-dashboard`  
+  `set +o allexport`  
+  `/usr/share/archivematica/dashboard/manage.py dumpdata --output /var/archivematica/sharedDirectory/fpr2.json fpr`
 * Relace the "fpr2.json" in the "fpr2par/sourceJSON/"" directory with your newly generated fpr2.json file
-* From the "Admin" menu, if you've already created a FPR database, press the "Delete FPR Database" button
+* From the "Admin" menu, if you've already created a fpr2par database, press the "Delete fpr2par Database" button
 * Press the "Create fpr2par database" button
 * Press the "Load data from fixtures" button
