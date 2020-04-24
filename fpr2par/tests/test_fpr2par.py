@@ -7,7 +7,7 @@ from datetime import datetime
 import pytest
 from jsonschema import ValidationError, validate
 
-from fpr2par import app, create_fpr_database, db, models, views
+from fpr2par import app, create_fpr2par_database, db, models, views
 
 
 def init_db():
