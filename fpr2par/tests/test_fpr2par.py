@@ -76,7 +76,7 @@ def client():
     app.config["TESTING"] = True
     with app.test_request_context() as client:
         with app.app_context():
-            create_fpr_database.createdbase()
+            create_fpr2par_database.createdbase()
             init_db()
         yield client
     db = None
