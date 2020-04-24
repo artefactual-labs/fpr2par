@@ -209,17 +209,29 @@ def formatFamilies():
     formatGroups = fpr_format_groups.query.all()
     response = {}
     response["formatFamilies"] = []
-    newGroups = {}
     for formatGroup in formatGroups:
         formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
-        newFormats = []
         for format in formats:
-            newFormat = {
-                "guid": format.uuid,
-                "name": format.description,
-                "namespace": "https://archivematica.org",
-            }
-            newFormats.append(newFormat)
+            formatVersions = fpr_format_versions.query.filter_by(
+                format=format.uuid
+            ).all()
+            newFormatVersions = []
+            for formatVersion in formatVersions:
+                if formatVersion.pronom_id != "":
+                    newFormatVersion = {
+                        "guid": formatVersion.uuid,
+                        "name": formatVersion.pronom_id,
+                        "namespace": "http://www.nationalarchives.gov.uk",
+                    }
+                else:
+                    newFormatVersion = {
+                        "guid": formatVersion.uuid,
+                        "name": formatVersion.description,
+                        "namespace": "https://www.archivematica.org",
+                    }
+
+                newFormatVersions.append(newFormatVersion)
+
         newGroup = {
             "familyType": "Format Group",
             "id": {
@@ -227,7 +239,7 @@ def formatFamilies():
                 "name": formatGroup.description,
                 "namespace": "https://archivematica.org",
             },
-            "fileFormats": newFormats,
+            "fileFormats": [newFormatVersions],
         }
         response["formatFamilies"].append(newGroup)
 
