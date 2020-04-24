@@ -204,6 +204,13 @@ def fprRule(id):
 
 @app.route("/api/par/format-families/<guid>", methods=["GET"])
 def formatFamily(guid):
+    """
+    Given a Format family's GUID, display information about it from the Format Policy Registry
+
+    * <uri>/api/par/format-families/c94ce0e6-c275-4c09-b802-695a18b7bf2a
+
+    """
+
     formatGroup = fpr_format_groups.query.get(guid)
     formats = fpr_formats.query.filter_by(group=formatGroup.uuid).all()
     newFormatVersions = []
@@ -240,7 +247,19 @@ def formatFamily(guid):
 
 @app.route("/api/par/format-families", methods=["GET"])
 def formatFamilies():
-    formatGroups = fpr_format_groups.query.all()
+    """
+    Display all Format families in the Format Policy Registry
+
+    * <uri>/api/par/format-families/
+
+    Alternatively, limit by count and offset:
+
+    * <uri>/api/par/format-families?limit=1&offset=10
+    """
+
+    offset, limit = _parse_offset_limit(request)
+
+    formatGroups = fpr_format_groups.query.all()[offset:limit]
     response = {}
     response["formatFamilies"] = []
 
@@ -284,10 +303,9 @@ def formatFamilies():
 @app.route("/api/par/file-formats/<guid>", methods=["GET"])
 def fileformat(guid):
     """
-    Given a file format's GUID, display information about it from the Format Policy Registry
+    Given a File format's GUID, display information about it from the Format Policy Registry
 
     * <uri>/api/par/file-formats/43d60a83-929a-45b4-9197-46177f85d095
-
     """
 
     version = fpr_format_versions.query.get(guid)
@@ -334,7 +352,7 @@ def fileformat(guid):
 @app.route("/api/par/file-formats", methods=["GET"])
 def fileformats():
     """
-    Display all file formats in the Format Policy Registry
+    Display all File formats in the Format Policy Registry
 
     * <uri>/api/par/file-formats/
 
@@ -391,27 +409,14 @@ def fileformats():
     return jsonify(response)
 
 
-@app.route("/api/par/preservation-action-types", methods=["GET"])
-def preservationActionTypes():
-    response = {}
-    response["preservationActionTypes"] = []
-    actionTypes = par_preservation_action_types.query.all()
-    for actionType in actionTypes:
-        newAction = {
-            "id": {
-                "guid": actionType.uuid,
-                "name": actionType.name,
-                "namespace": actionType.namespace,
-            },
-            "label": actionType.label,
-            "localLastModifiedDate": str(actionType.last_modified),
-        }
-        response["preservationActionTypes"].append(newAction)
-    return jsonify(response)
-
-
 @app.route("/api/par/preservation-action-types/<guid>", methods=["GET"])
 def preservationActionType(guid):
+    """
+    Given a Preservation action type's GUID, display information about it from the fpr2par database
+
+    * <uri>/api/par/preservation-action-types/d3c7ef45-5c58-4897-b145-d41afbf82c61
+    """
+
     actionType = par_preservation_action_types.query.get(guid)
     response = {
         "id": {
@@ -426,9 +431,35 @@ def preservationActionType(guid):
     return jsonify(response)
 
 
-@app.route("/api/par/preservation-actions", methods=["GET"])
-def preservationActions():
-    return jsonify({"response": "Not implemented"})
+@app.route("/api/par/preservation-action-types", methods=["GET"])
+def preservationActionTypes():
+    """
+    Display all Preservation action types in fpr2par
+
+    * <uri>/api/par/preservation-action-types/
+
+    Alternatively, limit by count and offset:
+
+    * <uri>/api/par/preservation-action-types?limit=3&offset=0
+    """
+
+    offset, limit = _parse_offset_limit(request)
+
+    response = {}
+    response["preservationActionTypes"] = []
+    actionTypes = par_preservation_action_types.query.all()[offset:limit]
+    for actionType in actionTypes:
+        newAction = {
+            "id": {
+                "guid": actionType.uuid,
+                "name": actionType.name,
+                "namespace": actionType.namespace,
+            },
+            "label": actionType.label,
+            "localLastModifiedDate": str(actionType.last_modified),
+        }
+        response["preservationActionTypes"].append(newAction)
+    return jsonify(response)
 
 
 @app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
@@ -436,12 +467,61 @@ def preservationAction(guid):
     return jsonify({"response": "Not implemented"})
 
 
+@app.route("/api/par/preservation-actions", methods=["GET"])
+def preservationActions():
+    return jsonify({"response": "Not implemented"})
+
+
+@app.route("/api/par/tools/<guid>", methods=["GET"])
+def tool(guid):
+    """
+    Given a Tool's GUID, display information about it from the Format Policy Registry
+
+    * <uri>/api/par/tools/246ad3d4-6a5d-466b-a35c-26c1323d198e
+    """
+
+    response = {}
+    tool = fpr_tools.query.get(guid)
+    if tool is not None:
+        response = {
+            "id": {
+                "guid": tool.uuid,
+                "name": tool.slug,
+                "namespace": "https://archivematica.org",
+            },
+            "toolName": tool.description,
+            "toolVersion": tool.version,
+        }
+    else:
+        # check whether the GUID matches an Identification tool
+        tool = fpr_id_tools.query.get(guid)
+        if tool is not None:
+            response = {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            }
+
+    return jsonify(response)
+
+
 @app.route("/api/par/tools", methods=["GET"])
 def tools():
+    """
+    Display all Tools in the Format Policy Registry
+
+    * <uri>/api/par/tools/
+    """
+
     response = {}
     response["tools"] = []
     # only include enabled tools
     tools = fpr_tools.query.filter_by(enabled=True).all()
+
     for tool in tools:
         newTool = {
             "id": {
@@ -468,37 +548,6 @@ def tools():
             "toolVersion": tool.version,
         }
         response["tools"].append(newTool)
-
-    return jsonify(response)
-
-
-@app.route("/api/par/tools/<guid>", methods=["GET"])
-def tool(guid):
-    response = {}
-    tool = fpr_tools.query.get(guid)
-    if tool is not None:
-        response = {
-            "id": {
-                "guid": tool.uuid,
-                "name": tool.slug,
-                "namespace": "https://archivematica.org",
-            },
-            "toolName": tool.description,
-            "toolVersion": tool.version,
-        }
-    else:
-        # check whether the GUID matches an Identification tool
-        tool = fpr_id_tools.query.get(guid)
-        if tool is not None:
-            response = {
-                "id": {
-                    "guid": tool.uuid,
-                    "name": tool.slug,
-                    "namespace": "https://archivematica.org",
-                },
-                "toolName": tool.description,
-                "toolVersion": tool.version,
-            }
 
     return jsonify(response)
 
