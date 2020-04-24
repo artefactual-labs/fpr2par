@@ -1,6 +1,7 @@
 import os
 from flask import flash
 
+
 def deletedbase():
     if os.path.isfile("fpr2par.db"):
         os.remove("fpr2par.db")

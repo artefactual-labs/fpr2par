@@ -1,0 +1,142 @@
+[
+    {
+        "fields": {
+            "uuid": "d3c7ef45-5c58-4897-b145-d41afbf82c61",
+            "name": "Identification",
+            "namespace": "https://archivematica.org",
+            "label": "Identification",
+            "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "ac87e824-0cd5-4416-9b64-875f030c05b1",
+          "name": "Characterization",
+          "namespace": "https://archivematica.org",
+          "label": "Characterization",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "de6b59ee-4996-44de-86f6-8d7a270e3bb6",
+          "name": "Extraction",
+          "namespace": "https://archivematica.org",
+          "label": "Extraction",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "4f7208e5-365e-4348-8301-d71ff9d8e220",
+          "name": "Normalization",
+          "namespace": "https://archivematica.org",
+          "label": "Normalization",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "50f59970-c318-4eb7-b285-922aa532481f",
+          "name": "Transcription",
+          "namespace": "https://archivematica.org",
+          "label": "Transcription",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "86bc1d5b-496d-4c8e-9e60-f54fecbb782d",
+          "name": "Validation",
+          "namespace": "https://archivematica.org",
+          "label": "Validation",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "bfe763f5-20e0-4741-be49-eb69c7b83f41",
+          "name": "Verification",
+          "namespace": "https://archivematica.org",
+          "label": "Verification",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "3f37a8ba-9ac4-4b03-9527-028c89e4ca91",
+          "name": "message digest calculation",
+          "namespace": "https://archivematica.org",
+          "label": "message digest calculation",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "9dd3c9a9-4462-4316-abb6-4681c997f5a8",
+          "name": "virus check",
+          "namespace": "https://archivematica.org",
+          "label": "virus check",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "eb73a039-4a88-473a-ac2c-fbe3690989ae",
+          "name": "ingestion",
+          "namespace": "https://archivematica.org",
+          "label": "ingestion",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "c78496fe-5496-4533-a590-c9d48fecfbb4",
+          "name": "ingestion",
+          "namespace": "https://archivematica.org",
+          "label": "ingestion",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "0124d5f1-f275-4711-9248-c219acd7a7ed",
+          "name": "placement in backlog",
+          "namespace": "https://archivematica.org",
+          "label": "placement in backlog",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "b81e8e6a-86c5-4d3e-8639-8f08da155c96",
+          "name": "removal from backlog",
+          "namespace": "https://archivematica.org",
+          "label": "removal from backlog",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "eff79484-19d5-4aa6-aa52-9e55dd6639e9",
+          "name": "ingestion",
+          "namespace": "https://archivematica.org",
+          "label": "ingestion",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    }
+  ]

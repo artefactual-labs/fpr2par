@@ -2,9 +2,9 @@ from flask import Flask, render_template, flash, redirect, request, jsonify
 from flask_basicauth import BasicAuth
 from fpr2par import app, db
 import os
-from .create_fpr_database import createdbase
-from .add_fpr_data import adddata
-from .delete_fpr_database import deletedbase
+from .create_fpr2par_database import createdbase
+from .add_fpr2par_data import adddata
+from .delete_fpr2par_database import deletedbase
 from datetime import datetime
 from .models import (
     fpr_formats,
@@ -16,6 +16,7 @@ from .models import (
     fpr_tools,
     fpr_commands,
     fpr_rules,
+    par_preservation_action_types,
 )
 
 basic_auth = BasicAuth(app)
@@ -67,25 +68,25 @@ def admin():
     return render_template("admin.html")
 
 
-@app.route("/create_fpr_database", methods=["GET"])
+@app.route("/create_fpr2par_database", methods=["GET"])
 @basic_auth.required
-def createFPRdbase():
+def createfpr2pardbase():
     createdbase()
     return redirect("/admin")
 
 
-@app.route("/add_fpr_data", methods=["GET"])
+@app.route("/add_fpr2par_data", methods=["GET"])
 @basic_auth.required
 def addFPRdata():
     duration = adddata()
-    flash("FPR data loaded")
+    flash("FPR and PAR data loaded")
     flash("Import duration: " + duration)
     return redirect("/admin")
 
 
-@app.route("/delete_fpr_database", methods=["GET"])
+@app.route("/delete_fpr2par_database", methods=["GET"])
 @basic_auth.required
-def deleteFPRdata():
+def deletedfpr2pardbase():
     deletedbase()
     return redirect("/admin")
 
@@ -371,12 +372,37 @@ def fileformats():
 
 @app.route("/api/par/preservation-action-types", methods=["GET"])
 def preservationActionTypes():
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    response["preservationActionTypes"] = []
+    actionTypes = par_preservation_action_types.query.all()
+    for actionType in actionTypes:
+        newAction = {
+            "id": {
+                "guid": actionType.uuid,
+                "name": actionType.name,
+                "namespace": actionType.namespace,
+            },
+            "label": actionType.label,
+            "localLastModifiedDate": str(actionType.last_modified),
+        }
+        response["preservationActionTypes"].append(newAction)
+    return jsonify(response)
 
 
 @app.route("/api/par/preservation-action-types/<guid>", methods=["GET"])
 def preservationActionType(guid):
-    return jsonify({"response": "Not implemented"})
+    actionType = par_preservation_action_types.query.get(guid)
+    response = {
+        "id": {
+            "guid": actionType.uuid,
+            "name": actionType.name,
+            "namespace": actionType.namespace,
+        },
+        "label": actionType.label,
+        "localLastModifiedDate": str(actionType.last_modified),
+    }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
