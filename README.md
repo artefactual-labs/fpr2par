@@ -11,7 +11,7 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
   `pip install -r requirements.txt`
 * Change admin password  
   `fpr2par/__init.py__`      
-* Export the Flask application environment variable:  
+* fpr2par is built using the [Python Flask](https://www.fullstackpython.com/flask.html) framework. Export the Flask application environment variable:  
   `export FLASK_APP=run.py`
 * To run the application as a local development server:  
   `flask run`  
