@@ -16,7 +16,7 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 * To run the application as a local development server:  
   `flask run`  
 * Go to `localhost:5000` in a browser to confirm that the app is running
-* Otherwise, to run the application on a publicly accessible server:
+* Otherwise, to run the application on a publicly accessible server:  
   `flask run --host=0.0.0.0`
 * Go to `[your IP]:5000` in a browser to confirm that the app is running
 * Select "Admin" from navigation menu
