@@ -51,7 +51,7 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 * Press the "Create fpr2par database" button
 * Press the "Load data from fixtures" button
 
-# Run test to validate fpr2par against PAR JSON schema
+# Run tests to validate fpr2par against PAR JSON schema
 * From the "fpr2par" project root directory, change to the "fpr2par" application directory  
   `cd fpr2par`  
 * Run Pytest tests  
