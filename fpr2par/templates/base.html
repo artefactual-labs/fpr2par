@@ -2,12 +2,17 @@
 <html lang="en">
 <head>
     <title>fpr2par</title>
+    <link rel="icon" type="image/png" href="../static/favicon.ico">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../static/bootstrap.min.css">
     <script type="text/javascript" src="../static/jquery-3.5.0.min.js"></script>
     <script type="text/javascript" src="../static/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../static/sorttable.js"></script>
+
+    {% include "datatable.html" %}
+
+    {% include "syntax_highlighting.html" %}
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -60,7 +65,7 @@
   <span style="font-style: italic" class="navbar-text">Access Archivematica FPR data via a PAR API</span>
 </nav>
 
-<div class="container-fluid" style="margin-top: 20px;">
+<div class="container-fluid" style="margin-top: 20px; padding-bottom: 20px;">
 
   {% with messages = get_flashed_messages() %}{% if messages %}
   <div class="alert alert-primary" role="alert">

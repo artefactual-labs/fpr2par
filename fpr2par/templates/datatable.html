@@ -1,0 +1,28 @@
+
+    <link rel="stylesheet" type="text/css" href="../static/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../static/dataTables.bootstrap4.min.css">
+
+    <script type="text/javascript" language="javascript" src="../static/jquery-3.3.1.js"></script>
+    <script type="text/javascript" language="javascript" src="../static/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="../static/dataTables.bootstrap4.min.js"></script>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function() {
+            $('#fpr-results').DataTable( {
+                "lengthMenu": [[10, 30, 60, -1], [10, 30, 60, "All"]],
+                "pageLength": 10,
+                "pagingType": "full_numbers",
+            } );
+        } );
+    </script>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function() {
+            $('#fpr-results-cmd').DataTable( {
+                "lengthMenu": [[10, 30, 60, -1], [10, 30, 60, "All"]],
+                "pageLength": 10,
+                "pagingType": "full_numbers",
+                "scrollX": true
+            } );
+        } );
+    </script>

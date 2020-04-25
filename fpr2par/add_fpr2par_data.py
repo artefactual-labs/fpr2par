@@ -16,6 +16,18 @@ from datetime import datetime
 import os
 
 
+def get_script_type(script_type):
+    if script_type == "as_is":
+        return ""
+    if script_type == "bashScript":
+        return "Bash"
+    if script_type == "command":
+        return "Bash"
+    if script_type == "pythonScript":
+        return "Python"
+    return script_type
+
+
 def adddata():
 
     # track total FPR data load time
@@ -253,7 +265,7 @@ def adddata():
                         script=object["fields"]["script"],
                         last_modified=cleanDate,
                         enabled=object["fields"]["enabled"],
-                        script_type=object["fields"]["script_type"],
+                        script_type=get_script_type(object["fields"]["script_type"]),
                         config=object["fields"]["config"],
                         description=object["fields"]["description"],
                         id_tool=object["fields"]["tool"],
@@ -268,7 +280,7 @@ def adddata():
                                 "script": object["fields"]["script"],
                                 "last_modified": cleanDate,
                                 "enabled": object["fields"]["enabled"],
-                                "script_type": object["fields"]["script_type"],
+                                "script_type": get_script_type(object["fields"]["script_type"]),
                                 "config": object["fields"]["config"],
                                 "description": object["fields"]["description"],
                                 "id_tool": object["fields"]["tool"],
@@ -382,7 +394,7 @@ def adddata():
                         command_usage=object["fields"]["command_usage"],
                         verification_command=object["fields"]["verification_command"],
                         command=object["fields"]["command"],
-                        script_type=object["fields"]["script_type"],
+                        script_type=get_script_type(object["fields"]["script_type"]),
                         output_format=object["fields"]["output_format"],
                         description=object["fields"]["description"],
                     )
@@ -405,7 +417,7 @@ def adddata():
                                     "verification_command"
                                 ],
                                 "command": object["fields"]["command"],
-                                "script_type": object["fields"]["script_type"],
+                                "script_type": get_script_type(object["fields"]["script_type"]),
                                 "output_format": object["fields"]["output_format"],
                                 "description": object["fields"]["description"],
                             }
