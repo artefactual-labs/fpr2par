@@ -19,7 +19,7 @@ from .models import (
     par_preservation_action_types,
 )
 
-from .helpers import _parse_offset_limit
+from .helpers import _parse_filter_dates, _parse_offset_limit
 
 basic_auth = BasicAuth(app)
 
@@ -600,7 +600,11 @@ def preservationAction(guid):
 def preservationActions():
     response = {}
     response["preservationActions"] = []
-    dpActions = fpr_commands.query.filter_by(enabled=True)
+
+    before_date, after_date = _parse_filter_dates(request)
+
+    dpActions = fpr_commands.query.filter_by(enabled=True).filter(fpr_commands.last_modified.between(after_date, before_date))
+
     for action in dpActions:
         type = par_preservation_action_types.query.filter_by(
             label=action.command_usage.lower()
@@ -691,7 +695,7 @@ def preservationActions():
     # The sourceJSON/fpr2.json data was modified after export to include the
     # most current version of each of the three Identification command options
     # in Archivematica (Siegfied, Fido, File extension)
-    dpActions = fpr_id_commands.query.filter_by(enabled=True)
+    dpActions = fpr_id_commands.query.filter_by(enabled=True).filter(fpr_id_commands.last_modified.between(after_date, before_date))
     type = par_preservation_action_types.query.get(
         "d3c7ef45-5c58-4897-b145-d41afbf82c61"
     )
