@@ -359,6 +359,11 @@ def fileformats():
     Alternatively, limit by count and offset:
 
     * <uri>/api/par/file-formats?limit=1&offset=10
+
+    As well as limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/file-formats?modified-before=2020-01-01&modified-after=1970-01-01
+
     """
 
     offset, limit = _parse_offset_limit(request)
@@ -443,6 +448,11 @@ def preservationActionTypes():
     Alternatively, limit by count and offset:
 
     * <uri>/api/par/preservation-action-types?limit=3&offset=0
+
+    As well as limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/preservation-action-types?modified-before=2020-01-01&modified-after=1970-01-01
+
     """
 
     offset, limit = _parse_offset_limit(request)
@@ -603,6 +613,16 @@ def preservationAction(guid):
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
 def preservationActions():
+    """
+    Display all Preservation actions in fpr2par
+
+    * <uri>/api/par/preservation-actions/
+
+    Alternatively, limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/preservation-actions?modified-before=2020-01-01&modified-after=1970-01-01
+
+    """
     response = {}
     response["preservationActions"] = []
 
