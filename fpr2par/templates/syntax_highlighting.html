@@ -1,0 +1,11 @@
+
+<link rel="stylesheet" href="../static/syntax.min.css">
+<script src="../static/highlight.min.js"></script>
+
+<script type="text/javascript" class="init">
+	document.addEventListener('DOMContentLoaded', (event) => {
+		document.querySelectorAll('pre code').forEach((block) => {
+			hljs.highlightBlock(block);
+		});
+	});
+</script>
