@@ -70817,7 +70817,7 @@
             "output_location": "%outputDirectory%%prefix%%fileName%%postfix%.mkv",
             "command_usage": "normalization",
             "verification_command": "a9111dc0-edc9-47f8-85e5-ad4013971361",
-            "command": "#!/bin/bash\n\ninputFile=\"%fileFullName%\"\noutputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.mkv\"\naudioCodec=\"pcm_s16le\"\nvideoCodec=\"ffv1 -level 3\"\n\ncommand=\"ffmpeg -vsync passthrough -i \\\"${inputFile}\\\" \"\ncommand=\"${command} -vcodec ${videoCodec} -g 1 \"\ncommand=\"${command} -acodec ${audioCodec}\"\n\n\ncommand=\"${command} ${outputFile}\"\n\necho $command\neval $command\n",
+            "command": "#!/bin/bash\n\ninputFile=\"%fileFullName%\"\noutputFile=\"%outputDirectory%%prefix%%fileName%%postfix%.mkv\"\naudioCodec=\"pcm_s16le\"\nvideoCodec=\"ffv1 -level 3\"\n\ncommand=\"ffmpeg -vsync passthrough -i \"${inputFile}\" \"\ncommand=\"${command} -vcodec ${videoCodec} -g 1 \"\ncommand=\"${command} -acodec ${audioCodec}\"\n\n\ncommand=\"${command} ${outputFile}\"\n\necho $command\neval $command\n",
             "script_type": "bashScript",
             "output_format": "4dc90ad8-319a-46be-95c8-390b189867d9",
             "description": "Transcoding to mkv with ffmpeg"
