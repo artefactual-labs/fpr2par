@@ -809,29 +809,26 @@ def tools():
     Display all Tools in the Format Policy Registry
 
     * <uri>/api/par/tools/
+
+    Alternatively, limit by count and offset:
+
+    * <uri>/api/par/tools?limit=3&offset=0
+
     """
 
     response = {}
     response["tools"] = []
-    # only include enabled tools
+
+    offset, limit = _parse_offset_limit(request)
+
+    # only include enabled tools.
     tools = fpr_tools.query.filter_by(enabled=True).all()
+    id_tools = fpr_id_tools.query.filter_by(enabled=True).all()
 
-    for tool in tools:
-        newTool = {
-            "id": {
-                "guid": tool.uuid,
-                "name": tool.slug,
-                "namespace": "https://archivematica.org",
-            },
-            "toolName": tool.description,
-            "toolVersion": tool.version,
-        }
-        response["tools"].append(newTool)
+    # concatenate our two lists.
+    new_tools = (tools + id_tools)[offset:limit]
 
-    # include Identification tools
-    # only include enabled tools
-    tools = fpr_id_tools.query.filter_by(enabled=True).all()
-    for tool in tools:
+    for tool in new_tools:
         newTool = {
             "id": {
                 "guid": tool.uuid,
