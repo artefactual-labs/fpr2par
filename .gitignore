@@ -1,6 +1,7 @@
 .DS_Store
-__pycache__/
-fpr2par/__pycache__/
 venv/
 fpr2par.db
-log.txt
+__pycache__/
+fpr2par/__pycache__/
+fpr2par/__init__.pyc
+fpr2par/.pytest_cache

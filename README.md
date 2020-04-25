@@ -1,6 +1,9 @@
 # fpr2par
 Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org/en/docs/archivematica-1.11/user-manual/preservation/preservation-planning/)) data via a Preservation Actions Registry ([PAR](https://openpreservation.org/events/collaborative-preservation-with-par/)) API
 
+![screencap](fpr2par-demo.png)
+
+# Installation instructions
 * Clone files and cd to directory:  
   `git clone https://github.com/peterVG/fpr2par && cd fpr2par`  
 * Set up virtualenv:  
@@ -28,9 +31,6 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 * Select the "PAR API requests" menu to run sample API requests
 * Make PAR API requests with your own client:  
   `[your terminal]> curl -X GET "http://[your base URL]/api/par/tools`
-
-![screencap](fpr2par-demo.png)
-
 
 # Load FPR data from your own instance of Archivematica
 * If you are using a Docker deployment of Archivematica, run the following task:  
