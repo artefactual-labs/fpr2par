@@ -369,7 +369,9 @@ def fileformats():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
-    versions = fpr_format_versions.query.filter(fpr_format_versions.last_modified.between(after_date, before_date)).all()[offset:limit]
+    versions = fpr_format_versions.query.filter(
+        fpr_format_versions.last_modified.between(after_date, before_date)
+    ).all()[offset:limit]
 
     response = {}
     response["fileFormats"] = []
@@ -461,7 +463,9 @@ def preservationActionTypes():
     response = {}
     response["preservationActionTypes"] = []
 
-    actionTypes = par_preservation_action_types.query.filter(par_preservation_action_types.last_modified.between(after_date, before_date)).all()[offset:limit]
+    actionTypes = par_preservation_action_types.query.filter(
+        par_preservation_action_types.last_modified.between(after_date, before_date)
+    ).all()[offset:limit]
 
     for actionType in actionTypes:
         newAction = {
@@ -479,6 +483,11 @@ def preservationActionTypes():
 
 @app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
 def preservationAction(guid):
+    """
+    Given a Preservation action's GUID, display information about it from the fpr2par database
+
+    * <uri>/api/par/preservation-actions/1628571b-c2cd-4822-afdb-53561400c7c4
+    """
     action = fpr_commands.query.get(guid)
     if action:
         type = par_preservation_action_types.query.filter_by(
@@ -628,7 +637,9 @@ def preservationActions():
 
     before_date, after_date = _parse_filter_dates(request)
 
-    dpActions = fpr_commands.query.filter_by(enabled=True).filter(fpr_commands.last_modified.between(after_date, before_date))
+    dpActions = fpr_commands.query.filter_by(enabled=True).filter(
+        fpr_commands.last_modified.between(after_date, before_date)
+    )
 
     for action in dpActions:
         type = par_preservation_action_types.query.filter_by(
@@ -720,7 +731,9 @@ def preservationActions():
     # The sourceJSON/fpr2.json data was modified after export to include the
     # most current version of each of the three Identification command options
     # in Archivematica (Siegfied, Fido, File extension)
-    dpActions = fpr_id_commands.query.filter_by(enabled=True).filter(fpr_id_commands.last_modified.between(after_date, before_date))
+    dpActions = fpr_id_commands.query.filter_by(enabled=True).filter(
+        fpr_id_commands.last_modified.between(after_date, before_date)
+    )
     type = par_preservation_action_types.query.get(
         "d3c7ef45-5c58-4897-b145-d41afbf82c61"
     )
