@@ -464,12 +464,277 @@ def preservationActionTypes():
 
 @app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
 def preservationAction(guid):
-    return jsonify({"response": "Not implemented"})
+    action = fpr_commands.query.get(guid)
+    if action:
+        type = par_preservation_action_types.query.filter_by(
+            label=action.command_usage.lower()
+        ).first()
+        tool = fpr_tools.query.get(action.tool)
+
+        rules = fpr_rules.query.filter_by(command=action.uuid).all()
+        if rules:
+            inputFiles = []
+            for rule in rules:
+                fileFormat = fpr_format_versions.query.filter_by(
+                    uuid=rule.format
+                ).first()
+                if fileFormat.pronom_id != "":
+                    inputFormat = (
+                        fileFormat.description + " (" + fileFormat.pronom_id + ")"
+                    )
+                else:
+                    inputFormat = fileFormat.description
+                inputFiles.append(
+                    {
+                        "description": "the file format that will be acted upon",
+                        "name": inputFormat,
+                    }
+                )
+        else:
+            inputFiles = None
+
+        # a rough heuristic for determining ouptFiles name (since FPR does not
+        # record this information separately)
+        if (type.name == "tra") or (type.name == "nor"):
+            outputFiles = {
+                "description": "file that will be created",
+                "name": action.output_location,
+            }
+        elif type.name == "cha":
+            if action.description == "FITS":
+                outputFiles = {
+                    "description": "file that will be created",
+                    "name": "fits.xml",
+                }
+            else:
+                outputFiles = {
+                    "description": "file that will be created",
+                    "name": "%fileFullName%.xml",
+                }
+        elif (type.name == "eve") or (type.name == "val"):
+            outputFiles = {
+                "description": "file where output is recorded",
+                "name": "METS.[AIP UUUD].xml",
+            }
+        elif type.name == "ext":
+            outputFiles = {"description": "[all extracted files]"}
+        else:
+            outputFiles = None
+
+        response = {
+            "description": action.description,
+            "example": action.command,
+            "id": {
+                "guid": action.uuid,
+                "name": action.description,
+                "namespace": "https://archivematica.org",
+            },
+            "tool": {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            },
+            "type": {
+                "id": {
+                    "guid": type.uuid,
+                    "name": type.name,
+                    "namespace": "https://archivematica.org",
+                },
+                "label": action.command_usage.lower(),
+            },
+            "inputFiles": [inputFiles],
+            "outputFiles": [outputFiles],
+        }
+
+    action = fpr_id_commands.query.get(guid)
+    if action:
+        type = par_preservation_action_types.query.get(
+            "d3c7ef45-5c58-4897-b145-d41afbf82c61"
+        )
+
+        tool = fpr_id_tools.query.get(action.id_tool)
+        response = {
+            "description": action.description,
+            "example": action.script,
+            "id": {
+                "guid": action.uuid,
+                "name": action.description,
+                "namespace": "https://archivematica.org",
+            },
+            "tool": {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            },
+            "type": {
+                "id": {
+                    "guid": type.uuid,
+                    "name": type.name,
+                    "namespace": "https://archivematica.org",
+                },
+                "label": type.label,
+            },
+            "inputFiles": [
+                {"description": "files that will be acted upon", "name": "[all files]",}
+            ],
+            "outputFiles": [
+                {
+                    "description": "file where output is recorded",
+                    "name": "METS.[AIP UUUD].xml",
+                }
+            ],
+        }
+
+    return jsonify(response)
 
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
 def preservationActions():
-    return jsonify({"response": "Not implemented"})
+    response = {}
+    response["preservationActions"] = []
+    dpActions = fpr_commands.query.filter_by(enabled=True)
+    for action in dpActions:
+        type = par_preservation_action_types.query.filter_by(
+            label=action.command_usage.lower()
+        ).first()
+        tool = fpr_tools.query.get(action.tool)
+
+        rules = fpr_rules.query.filter_by(command=action.uuid).all()
+        if rules:
+            inputFiles = []
+            for rule in rules:
+                fileFormat = fpr_format_versions.query.filter_by(
+                    uuid=rule.format
+                ).first()
+                if fileFormat.pronom_id != "":
+                    inputFormat = (
+                        fileFormat.description + " (" + fileFormat.pronom_id + ")"
+                    )
+                else:
+                    inputFormat = fileFormat.description
+                inputFiles.append(
+                    {
+                        "description": "the file format that will be acted upon",
+                        "name": inputFormat,
+                    }
+                )
+        else:
+            inputFiles = None
+
+        # a rough heuristic for determining ouptFiles name (since FPR does not
+        # record this information separately)
+        if (type.name == "tra") or (type.name == "nor"):
+            outputFiles = {
+                "description": "file that will be created",
+                "name": action.output_location,
+            }
+        elif type.name == "cha":
+            if action.description == "FITS":
+                outputFiles = {
+                    "description": "file that will be created",
+                    "name": "fits.xml",
+                }
+            else:
+                outputFiles = {
+                    "description": "file that will be created",
+                    "name": "%fileFullName%.xml",
+                }
+        elif (type.name == "eve") or (type.name == "val"):
+            outputFiles = {
+                "description": "file where output is recorded",
+                "name": "METS.[AIP UUUD].xml",
+            }
+        elif type.name == "ext":
+            outputFiles = {"description": "[all extracted files]"}
+        else:
+            outputFiles = None
+
+        newAction = {
+            "description": action.description,
+            "example": action.command,
+            "id": {
+                "guid": action.uuid,
+                "name": action.description,
+                "namespace": "https://archivematica.org",
+            },
+            "tool": {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            },
+            "type": {
+                "id": {
+                    "guid": type.uuid,
+                    "name": type.name,
+                    "namespace": "https://archivematica.org",
+                },
+                "label": action.command_usage.lower(),
+            },
+            "inputFiles": [inputFiles],
+            "outputFiles": [outputFiles],
+        }
+        response["preservationActions"].append(newAction)
+
+    # Archivematica only has one Identification command enabled at any one time.
+    # The sourceJSON/fpr2.json data was modified after export to include the
+    # most current version of each of the three Identification command options
+    # in Archivematica (Siegfied, Fido, File extension)
+    dpActions = fpr_id_commands.query.filter_by(enabled=True)
+    type = par_preservation_action_types.query.get(
+        "d3c7ef45-5c58-4897-b145-d41afbf82c61"
+    )
+    for action in dpActions:
+        tool = fpr_id_tools.query.get(action.id_tool)
+        newAction = {
+            "description": action.description,
+            "example": action.script,
+            "id": {
+                "guid": action.uuid,
+                "name": action.description,
+                "namespace": "https://archivematica.org",
+            },
+            "tool": {
+                "id": {
+                    "guid": tool.uuid,
+                    "name": tool.slug,
+                    "namespace": "https://archivematica.org",
+                },
+                "toolName": tool.description,
+                "toolVersion": tool.version,
+            },
+            "type": {
+                "id": {
+                    "guid": type.uuid,
+                    "name": type.name,
+                    "namespace": "https://archivematica.org",
+                },
+                "label": type.label,
+            },
+            "inputFiles": [
+                {"description": "files that will be acted upon", "name": "[all files]",}
+            ],
+            "outputFiles": [
+                {
+                    "description": "file where output is recorded",
+                    "name": "METS.[AIP UUUD].xml",
+                }
+            ],
+        }
+        response["preservationActions"].append(newAction)
+
+    return jsonify(response)
 
 
 @app.route("/api/par/tools/<guid>", methods=["GET"])
