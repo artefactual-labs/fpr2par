@@ -2,9 +2,9 @@
     {
         "fields": {
             "uuid": "d3c7ef45-5c58-4897-b145-d41afbf82c61",
-            "name": "Identification",
+            "name": "ide",
             "namespace": "https://archivematica.org",
-            "label": "Identification",
+            "label": "identification",
             "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
@@ -12,9 +12,9 @@
     {
         "fields": {
           "uuid": "ac87e824-0cd5-4416-9b64-875f030c05b1",
-          "name": "Characterization",
+          "name": "cha",
           "namespace": "https://archivematica.org",
-          "label": "Characterization",
+          "label": "characterization",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
@@ -22,9 +22,9 @@
     {
         "fields": {
           "uuid": "de6b59ee-4996-44de-86f6-8d7a270e3bb6",
-          "name": "Extraction",
+          "name": "ext",
           "namespace": "https://archivematica.org",
-          "label": "Extraction",
+          "label": "extraction",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
@@ -32,9 +32,9 @@
     {
         "fields": {
           "uuid": "4f7208e5-365e-4348-8301-d71ff9d8e220",
-          "name": "Normalization",
+          "name": "nor",
           "namespace": "https://archivematica.org",
-          "label": "Normalization",
+          "label": "normalization",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
@@ -42,9 +42,9 @@
     {
         "fields": {
           "uuid": "50f59970-c318-4eb7-b285-922aa532481f",
-          "name": "Transcription",
+          "name": "tra",
           "namespace": "https://archivematica.org",
-          "label": "Transcription",
+          "label": "transcription",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
@@ -52,9 +52,9 @@
     {
         "fields": {
           "uuid": "86bc1d5b-496d-4c8e-9e60-f54fecbb782d",
-          "name": "Validation",
+          "name": "val",
           "namespace": "https://archivematica.org",
-          "label": "Validation",
+          "label": "validation",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
@@ -62,17 +62,27 @@
     {
         "fields": {
           "uuid": "bfe763f5-20e0-4741-be49-eb69c7b83f41",
-          "name": "Verification",
+          "name": "ver",
           "namespace": "https://archivematica.org",
-          "label": "Verification",
+          "label": "verification",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
     },
     {
         "fields": {
+            "uuid": "cee47e9e-f921-4fee-937d-c603790d8617",
+            "name": "eve",
+            "namespace": "https://archivematica.org",
+            "label": "event_detail",
+            "lastmodified": "2020-04-23T12:0:0"
+          },
+        "model": "par.preservationActionTypes"
+     },
+     {
+        "fields": {
           "uuid": "3f37a8ba-9ac4-4b03-9527-028c89e4ca91",
-          "name": "message digest calculation",
+          "name": "mes",
           "namespace": "https://archivematica.org",
           "label": "message digest calculation",
           "lastmodified": "2020-04-23T12:0:0"
@@ -82,7 +92,7 @@
     {
         "fields": {
           "uuid": "9dd3c9a9-4462-4316-abb6-4681c997f5a8",
-          "name": "virus check",
+          "name": "vir",
           "namespace": "https://archivematica.org",
           "label": "virus check",
           "lastmodified": "2020-04-23T12:0:0"
@@ -92,7 +102,7 @@
     {
         "fields": {
           "uuid": "eb73a039-4a88-473a-ac2c-fbe3690989ae",
-          "name": "ingestion",
+          "name": "ing",
           "namespace": "https://archivematica.org",
           "label": "ingestion",
           "lastmodified": "2020-04-23T12:0:0"
@@ -102,7 +112,7 @@
     {
         "fields": {
           "uuid": "0124d5f1-f275-4711-9248-c219acd7a7ed",
-          "name": "placement in backlog",
+          "name": "pla",
           "namespace": "https://archivematica.org",
           "label": "placement in backlog",
           "lastmodified": "2020-04-23T12:0:0"
@@ -112,9 +122,29 @@
     {
         "fields": {
           "uuid": "b81e8e6a-86c5-4d3e-8639-8f08da155c96",
-          "name": "removal from backlog",
+          "name": "rem",
           "namespace": "https://archivematica.org",
           "label": "removal from backlog",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "bdbd1071-a2f2-41d4-846f-dd76c34b464f",
+          "name": "cre",
+          "namespace": "https://archivematica.org",
+          "label": "creation",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "0ad0a3fc-5047-4e8b-b780-931077aab172",
+          "name": "nam",
+          "namespace": "https://archivematica.org",
+          "label": "name cleanup",
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
