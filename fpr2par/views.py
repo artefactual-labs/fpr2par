@@ -362,8 +362,10 @@ def fileformats():
     """
 
     offset, limit = _parse_offset_limit(request)
+    before_date, after_date = _parse_filter_dates(request)
 
-    versions = fpr_format_versions.query.all()[offset:limit]
+    versions = fpr_format_versions.query.filter(fpr_format_versions.last_modified.between(after_date, before_date)).all()[offset:limit]
+
     response = {}
     response["fileFormats"] = []
 
