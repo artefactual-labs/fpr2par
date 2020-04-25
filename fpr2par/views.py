@@ -444,10 +444,13 @@ def preservationActionTypes():
     """
 
     offset, limit = _parse_offset_limit(request)
+    before_date, after_date = _parse_filter_dates(request)
 
     response = {}
     response["preservationActionTypes"] = []
-    actionTypes = par_preservation_action_types.query.all()[offset:limit]
+
+    actionTypes = par_preservation_action_types.query.filter(par_preservation_action_types.last_modified.between(after_date, before_date)).all()[offset:limit]
+
     for actionType in actionTypes:
         newAction = {
             "id": {
