@@ -31,7 +31,7 @@
         <td>{{ command.description }}</td>
         <td>{% if command.fprRules|length != 0 %}<a href="/fpr_rule/{{command.uuid}}">{{ command.fprRules|length }}</a>{% else %}{{ command.fprRules|length }}{% endif %} </td>
         <td>{{ command.fprTool }}</td>
-        <td>{{ command.command }}</td>
+        <td><pre><code>{{ command.command }}</code></pre></td>
         <td>{{ command.script_type }}</td>
         <td>{{ command.enabled }}</td>
         <td>{{ command.outputFormat}}</td>
