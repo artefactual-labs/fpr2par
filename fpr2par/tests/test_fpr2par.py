@@ -101,8 +101,10 @@ def test_file_formats(client):
         schema = json.load(json_file)
         pretty_validate(json_resp, schema=schema)
     assert (
-        len(json_resp["fileFormats"]) == 2
-    ), "Expecting more than one format to iterate over"
+        len(json_resp["fileFormats"]) > 1
+    ), "Expecting more than '1' format to iterate over: {}".format(
+        len(json_resp["fileFormats"])
+    )
     for format_entry in json_resp["fileFormats"]:
         format_schema_path = os.path.join("schema", "format.json")
         with open(format_schema_path) as json_file:
@@ -113,6 +115,11 @@ def test_file_formats(client):
 def test_file_format(client):
     """Test the database configuration and creation."""
     uuids = [formats.uuid for formats in models.fpr_format_versions.query.all()]
+    assert (
+        len(uuids) > 1
+    ), "Expecting more than '1' UUIDs to be returned from the database: {}".format(
+        len(uuids)
+    )
     # TODO: Workflow needed to update schema dynamically-ish, e.g. when updated
     # pull in the changes.
     format_schema_path = os.path.join("schema", "format.json")
@@ -123,9 +130,6 @@ def test_file_format(client):
         json_resp = json.loads(formats.response[0])
         pretty_validate(json_resp, schema=schema)
         # Validate our second response.
-        formats = views.fileformat(uuids[0])
+        formats = views.fileformat(uuids[1])
         json_resp = json.loads(formats.response[0])
-        try:
-            pretty_validate(json_resp, schema=schema)
-        except ValidationError as err:
-            raise ValidationError(err)
+        pretty_validate(json_resp, schema=schema)

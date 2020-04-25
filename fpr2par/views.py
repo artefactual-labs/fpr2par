@@ -19,7 +19,7 @@ from .models import (
     par_preservation_action_types,
 )
 
-from .helpers import _parse_offset_limit
+from .helpers import _parse_filter_dates, _parse_offset_limit
 
 basic_auth = BasicAuth(app)
 
@@ -359,11 +359,20 @@ def fileformats():
     Alternatively, limit by count and offset:
 
     * <uri>/api/par/file-formats?limit=1&offset=10
+
+    As well as limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/file-formats?modified-before=2020-01-01&modified-after=1970-01-01
+
     """
 
     offset, limit = _parse_offset_limit(request)
+    before_date, after_date = _parse_filter_dates(request)
 
-    versions = fpr_format_versions.query.all()[offset:limit]
+    versions = fpr_format_versions.query.filter(
+        fpr_format_versions.last_modified.between(after_date, before_date)
+    ).all()[offset:limit]
+
     response = {}
     response["fileFormats"] = []
 
@@ -441,13 +450,23 @@ def preservationActionTypes():
     Alternatively, limit by count and offset:
 
     * <uri>/api/par/preservation-action-types?limit=3&offset=0
+
+    As well as limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/preservation-action-types?modified-before=2020-01-01&modified-after=1970-01-01
+
     """
 
     offset, limit = _parse_offset_limit(request)
+    before_date, after_date = _parse_filter_dates(request)
 
     response = {}
     response["preservationActionTypes"] = []
-    actionTypes = par_preservation_action_types.query.all()[offset:limit]
+
+    actionTypes = par_preservation_action_types.query.filter(
+        par_preservation_action_types.last_modified.between(after_date, before_date)
+    ).all()[offset:limit]
+
     for actionType in actionTypes:
         newAction = {
             "id": {
@@ -464,6 +483,11 @@ def preservationActionTypes():
 
 @app.route("/api/par/preservation-actions/<guid>", methods=["GET"])
 def preservationAction(guid):
+    """
+    Given a Preservation action's GUID, display information about it from the fpr2par database
+
+    * <uri>/api/par/preservation-actions/1628571b-c2cd-4822-afdb-53561400c7c4
+    """
     action = fpr_commands.query.get(guid)
     if action:
         type = par_preservation_action_types.query.filter_by(
@@ -598,9 +622,25 @@ def preservationAction(guid):
 
 @app.route("/api/par/preservation-actions", methods=["GET"])
 def preservationActions():
+    """
+    Display all Preservation actions in fpr2par
+
+    * <uri>/api/par/preservation-actions/
+
+    Alternatively, limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/preservation-actions?modified-before=2020-01-01&modified-after=1970-01-01
+
+    """
     response = {}
     response["preservationActions"] = []
-    dpActions = fpr_commands.query.filter_by(enabled=True)
+
+    before_date, after_date = _parse_filter_dates(request)
+
+    dpActions = fpr_commands.query.filter_by(enabled=True).filter(
+        fpr_commands.last_modified.between(after_date, before_date)
+    )
+
     for action in dpActions:
         type = par_preservation_action_types.query.filter_by(
             label=action.command_usage.lower()
@@ -691,7 +731,9 @@ def preservationActions():
     # The sourceJSON/fpr2.json data was modified after export to include the
     # most current version of each of the three Identification command options
     # in Archivematica (Siegfied, Fido, File extension)
-    dpActions = fpr_id_commands.query.filter_by(enabled=True)
+    dpActions = fpr_id_commands.query.filter_by(enabled=True).filter(
+        fpr_id_commands.last_modified.between(after_date, before_date)
+    )
     type = par_preservation_action_types.query.get(
         "d3c7ef45-5c58-4897-b145-d41afbf82c61"
     )
@@ -780,29 +822,26 @@ def tools():
     Display all Tools in the Format Policy Registry
 
     * <uri>/api/par/tools/
+
+    Alternatively, limit by count and offset:
+
+    * <uri>/api/par/tools?limit=3&offset=0
+
     """
 
     response = {}
     response["tools"] = []
-    # only include enabled tools
+
+    offset, limit = _parse_offset_limit(request)
+
+    # only include enabled tools.
     tools = fpr_tools.query.filter_by(enabled=True).all()
+    id_tools = fpr_id_tools.query.filter_by(enabled=True).all()
 
-    for tool in tools:
-        newTool = {
-            "id": {
-                "guid": tool.uuid,
-                "name": tool.slug,
-                "namespace": "https://archivematica.org",
-            },
-            "toolName": tool.description,
-            "toolVersion": tool.version,
-        }
-        response["tools"].append(newTool)
+    # concatenate our two lists.
+    new_tools = (tools + id_tools)[offset:limit]
 
-    # include Identification tools
-    # only include enabled tools
-    tools = fpr_id_tools.query.filter_by(enabled=True).all()
-    for tool in tools:
+    for tool in new_tools:
         newTool = {
             "id": {
                 "guid": tool.uuid,
