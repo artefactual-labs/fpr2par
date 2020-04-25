@@ -47,6 +47,7 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
   `set +o allexport`  
   `/usr/share/archivematica/dashboard/manage.py dumpdata --output /var/archivematica/sharedDirectory/fpr2.json fpr`
 * Relace the "fpr2.json" in the "fpr2par/sourceJSON/"" directory with your newly generated fpr2.json file
+* Note that there are two small issues with the FPR source JSON: [Issue #36](https://github.com/artefactual-labs/fpr2par/issues/36) and [Issue #37](https://github.com/artefactual-labs/fpr2par/issues/37). You will have to make the following fixes to your fpr2.json file: [Fix 1](https://github.com/artefactual-labs/fpr2par/commit/4da49425bb221239fd52c80d1abe483c583d463b) and [Fix 2](https://github.com/artefactual-labs/fpr2par/commit/aa081885776e2373f924f42b6de5326bd55641da)
 * From the "Admin" menu, if you've already created a fpr2par database, press the "Delete fpr2par Database" button
 * Press the "Create fpr2par database" button
 * Press the "Load data from fixtures" button
