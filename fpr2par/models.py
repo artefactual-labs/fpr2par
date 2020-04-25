@@ -131,6 +131,9 @@ class fpr_id_commands(db.Model):
     id_tool = db.Column(
         db.String(36), db.ForeignKey("fpr_id_tools.uuid"), nullable=False, index=True,
     )
+    fprIdTool = db.relationship(
+        "fpr_id_tools", cascade="all,delete", backref="fpr_id_commands", lazy=True
+    )
     fprIdRules = db.relationship(
         "fpr_id_rules", cascade="all,delete", backref="fpr_id_commands", lazy=True
     )
@@ -240,11 +243,14 @@ class fpr_commands(db.Model):
     output_format = db.Column(
         db.String(36), db.ForeignKey("fpr_format_versions.uuid"), index=True,
     )
+    outputFormat = db.relationship(
+        "fpr_format_versions", cascade="all,delete", backref="fpr_commands", lazy=True
+    )
     fprRules = db.relationship(
         "fpr_rules", cascade="all,delete", backref="fpr_commands", lazy=True
     )
-    outputFormat = db.relationship(
-        "fpr_format_versions", cascade="all,delete", backref="fpr_commands", lazy=True
+    fprTool = db.relationship(
+        "fpr_tools", cascade="all,delete", backref="fpr_commands", lazy=True
     )
 
     def __init__(
