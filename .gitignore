@@ -5,3 +5,4 @@ __pycache__/
 fpr2par/__pycache__/
 fpr2par/__init__.pyc
 fpr2par/.pytest_cache
+fpr2par/tests/__pycache__
