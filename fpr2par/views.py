@@ -902,9 +902,50 @@ def businessRule(guid):
         + "), use "
         + str(command.fprTool)
     )
+
+    priority = 1
+    preservationActions = []
+    preservationActions.append(
+        {
+            "preservationAction": {
+                "guid": command.uuid,
+                "name": command.description,
+                "namespace": "https://archivematica.org",
+            },
+            "priority": priority,
+        }
+    )
+    if command.verification_command:
+        priority += 1
+        verificationCommand = fpr_commands.query.get(command.verification_command)
+        preservationActions.append(
+            {
+                "preservationAction": {
+                    "guid": verificationCommand.uuid,
+                    "name": verificationCommand.description,
+                    "namespace": "https://archivematica.org",
+                },
+                "priority": priority,
+            }
+        )
+    if command.event_detail_command:
+        priority += 1
+        eventDetailCommand = fpr_commands.query.get(command.event_detail_command)
+        preservationActions.append(
+            {
+                "preservationAction": {
+                    "guid": eventDetailCommand.uuid,
+                    "name": eventDetailCommand.description,
+                    "namespace": "https://archivematica.org",
+                },
+                "priority": priority,
+            }
+        )
+
     actionType = par_preservation_action_types.query.filter_by(
         label=command.command_usage.lower()
     ).first()
+
     response = {
         "id": {
             "guid": rule.uuid,
@@ -914,13 +955,7 @@ def businessRule(guid):
         "formats": [
             {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
         ],
-        "preservationActions": [
-            {
-                "guid": command.uuid,
-                "name": command.description,
-                "namespace": "https://archivematica.org",
-            }
-        ],
+        "preservationActions": [preservationActions],
         "preservationActiontypes": [
             {
                 "id": {
@@ -999,9 +1034,50 @@ def businessRules():
             + "), use "
             + str(command.fprTool)
         )
+
+        priority = 1
+        preservationActions = []
+        preservationActions.append(
+            {
+                "preservationAction": {
+                    "guid": command.uuid,
+                    "name": command.description,
+                    "namespace": "https://archivematica.org",
+                },
+                "priority": priority,
+            }
+        )
+        if command.verification_command:
+            priority += 1
+            verificationCommand = fpr_commands.query.get(command.verification_command)
+            preservationActions.append(
+                {
+                    "preservationAction": {
+                        "guid": verificationCommand.uuid,
+                        "name": verificationCommand.description,
+                        "namespace": "https://archivematica.org",
+                    },
+                    "priority": priority,
+                }
+            )
+        if command.event_detail_command:
+            priority += 1
+            eventDetailCommand = fpr_commands.query.get(command.event_detail_command)
+            preservationActions.append(
+                {
+                    "preservationAction": {
+                        "guid": eventDetailCommand.uuid,
+                        "name": eventDetailCommand.description,
+                        "namespace": "https://archivematica.org",
+                    },
+                    "priority": priority,
+                }
+            )
+
         actionType = par_preservation_action_types.query.filter_by(
             label=command.command_usage.lower()
         ).first()
+
         newRule = {
             "id": {
                 "guid": rule.uuid,
@@ -1011,13 +1087,7 @@ def businessRules():
             "formats": [
                 {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
             ],
-            "preservationActions": [
-                {
-                    "guid": command.uuid,
-                    "name": command.description,
-                    "namespace": "https://archivematica.org",
-                }
-            ],
+            "preservationActions": [preservationActions],
             "preservationActiontypes": [
                 {
                     "id": {
