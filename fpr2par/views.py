@@ -675,15 +675,15 @@ def preservationActions():
         try:
             # This is an ID tool so set ID action_type
             _ = action.id_tool
-            type = par_preservation_action_types.query.get(
+            action_type = par_preservation_action_types.query.get(
                 "d3c7ef45-5c58-4897-b145-d41afbf82c61"
             )
             tool = fpr_id_tools.query.get(action.id_tool)
-            action_label = type.label
+            action_label = action_type.label
             action_command = action.script
         except AttributeError:
             # We don't have an ID tool so set action type differently.
-            type = par_preservation_action_types.query.filter_by(
+            action_type = par_preservation_action_types.query.filter_by(
                 label=action.command_usage.lower()
             ).first()
             tool = fpr_tools.query.get(action.tool)
@@ -714,12 +714,12 @@ def preservationActions():
 
         # a rough heuristic for determining ouptFiles name (since FPR does not
         # record this information separately)
-        if (type.name == "tra") or (type.name == "nor"):
+        if (action_type.name == "tra") or (action_type.name == "nor"):
             outputFiles = {
                 "description": "file that will be created",
                 "name": action.output_location,
             }
-        elif type.name == "cha":
+        elif action_type.name == "cha":
             if action.description == "FITS":
                 outputFiles = {
                     "description": "file that will be created",
@@ -730,12 +730,12 @@ def preservationActions():
                     "description": "file that will be created",
                     "name": "%fileFullName%.xml",
                 }
-        elif (type.name == "eve") or (type.name == "val"):
+        elif (action_type.name == "eve") or (action_type.name == "val"):
             outputFiles = {
                 "description": "file where output is recorded",
                 "name": "METS.[AIP UUUD].xml",
             }
-        elif type.name == "ext":
+        elif action_type.name == "ext":
             outputFiles = {"description": "[all extracted files]"}
         else:
             outputFiles = None
@@ -759,8 +759,8 @@ def preservationActions():
             },
             "type": {
                 "id": {
-                    "guid": type.uuid,
-                    "name": type.name,
+                    "guid": action_type.uuid,
+                    "name": action_type.name,
                     "namespace": "https://archivematica.org",
                 },
                 "label": action_label,
