@@ -647,42 +647,70 @@ def preservationActions():
     * <uri>/api/par/preservation-actions?modified-before=2020-01-01&modified-after=1970-01-01
 
     """
-    response = {}
-    response["preservationActions"] = []
 
+    offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
     dpActions = fpr_commands.query.filter_by(enabled=True).filter(
         fpr_commands.last_modified.between(after_date, before_date)
     )
 
-    for action in dpActions:
-        type = par_preservation_action_types.query.filter_by(
-            label=action.command_usage.lower()
-        ).first()
-        tool = fpr_tools.query.get(action.tool)
+    # Archivematica only has one Identification command enabled at any one time.
+    # The sourceJSON/fpr2.json data was modified after export to include the
+    # most current version of each of the three Identification command options
+    # in Archivematica (Siegfied, Fido, File extension)
+    dpIdActions = fpr_id_commands.query.filter_by(enabled=True).filter(
+        fpr_id_commands.last_modified.between(after_date, before_date)
+    )
 
-        rules = fpr_rules.query.filter_by(command=action.uuid).all()
-        if rules:
-            inputFiles = []
-            for rule in rules:
-                fileFormat = fpr_format_versions.query.filter_by(
-                    uuid=rule.format
-                ).first()
-                if fileFormat.pronom_id:
-                    inputFormat = (
-                        fileFormat.description + " (" + fileFormat.pronom_id + ")"
+    # concatenate our two  query result lists.
+    newActions = (dpActions + dpIdActions)[offset:limit]
+
+    response = {}
+    response["preservationActions"] = []
+
+    for action in newActions:
+        try:
+            type = par_preservation_action_types.query.filter_by(
+                label=action.command_usage.lower()
+            ).first()
+        except:
+            # action doesn't have a 'command_usage' field so it must be a ID Command
+            type = par_preservation_action_types.query.get(
+                "d3c7ef45-5c58-4897-b145-d41afbf82c61"
+            )
+        try:
+            tool = fpr_tools.query.get(action.tool)
+        except:
+            # action doesn't have a 'tool' field so it must be a ID Command
+            tool = fpr_id_tools.query.get(action.id_tool)
+        try:
+            rules = fpr_rules.query.filter_by(command=action.uuid).all()
+            if rules:
+                inputFiles = []
+                for rule in rules:
+                    fileFormat = fpr_format_versions.query.filter_by(
+                        uuid=rule.format
+                    ).first()
+                    if fileFormat.pronom_id:
+                        inputFormat = (
+                            fileFormat.description + " (" + fileFormat.pronom_id + ")"
+                        )
+                    else:
+                        inputFormat = fileFormat.description
+                    inputFiles.append(
+                        {
+                            "description": "the file format that will be acted upon",
+                            "name": inputFormat,
+                        }
                     )
-                else:
-                    inputFormat = fileFormat.description
-                inputFiles.append(
-                    {
-                        "description": "the file format that will be acted upon",
-                        "name": inputFormat,
-                    }
-                )
-        else:
-            inputFiles = None
+            else:
+                inputFiles = None
+        except:
+            inputFiles = {
+                "description": "files that will be acted upon",
+                "name": "[all files]",
+            }
 
         # a rough heuristic for determining ouptFiles name (since FPR does not
         # record this information separately)
@@ -709,54 +737,22 @@ def preservationActions():
             }
         elif type.name == "ext":
             outputFiles = {"description": "[all extracted files]"}
+        elif type.name == "ide":
+            outputFiles = {
+                "description": "file where output is recorded",
+                "name": "METS.[AIP UUUD].xml",
+            }
         else:
             outputFiles = None
 
-        newAction = {
-            "description": action.description,
-            "example": action.command,
-            "id": {
-                "guid": action.uuid,
-                "name": action.description,
-                "namespace": "https://archivematica.org",
-            },
-            "tool": {
-                "id": {
-                    "guid": tool.uuid,
-                    "name": tool.slug,
-                    "namespace": "https://archivematica.org",
-                },
-                "toolName": tool.description,
-                "toolVersion": tool.version,
-            },
-            "type": {
-                "id": {
-                    "guid": type.uuid,
-                    "name": type.name,
-                    "namespace": "https://archivematica.org",
-                },
-                "label": action.command_usage.lower(),
-            },
-            "inputFiles": [inputFiles],
-            "outputFiles": [outputFiles],
-        }
-        response["preservationActions"].append(newAction)
+        try:
+            example = action.command
+        except:
+            example = action.script
 
-    # Archivematica only has one Identification command enabled at any one time.
-    # The sourceJSON/fpr2.json data was modified after export to include the
-    # most current version of each of the three Identification command options
-    # in Archivematica (Siegfied, Fido, File extension)
-    dpActions = fpr_id_commands.query.filter_by(enabled=True).filter(
-        fpr_id_commands.last_modified.between(after_date, before_date)
-    )
-    type = par_preservation_action_types.query.get(
-        "d3c7ef45-5c58-4897-b145-d41afbf82c61"
-    )
-    for action in dpActions:
-        tool = fpr_id_tools.query.get(action.id_tool)
         newAction = {
             "description": action.description,
-            "example": action.script,
+            "example": example,
             "id": {
                 "guid": action.uuid,
                 "name": action.description,
@@ -779,15 +775,8 @@ def preservationActions():
                 },
                 "label": type.label,
             },
-            "inputFiles": [
-                {"description": "files that will be acted upon", "name": "[all files]",}
-            ],
-            "outputFiles": [
-                {
-                    "description": "file where output is recorded",
-                    "name": "METS.[AIP UUUD].xml",
-                }
-            ],
+            "inputFiles": [inputFiles],
+            "outputFiles": [outputFiles],
         }
         response["preservationActions"].append(newAction)
 
