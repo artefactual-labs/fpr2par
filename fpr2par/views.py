@@ -941,11 +941,27 @@ def businessRules():
 
     * <uri>/api/par/business-rules/
 
+    Alternatively, limit by count and offset:
+
+    * <uri>/api/par/business-rules?limit=1&offset=10
+
+    As well as limit by modified before and after dates (both optional)
+
+    * <uri>/api/par/business-rules?modified-before=2020-01-01&modified-after=1970-01-01
+
     """
+
+    offset, limit = _parse_offset_limit(request)
+    before_date, after_date = _parse_filter_dates(request)
+
+    rules = (
+        fpr_rules.query.filter_by(enabled=True)
+        .filter(fpr_format_versions.last_modified.between(after_date, before_date))
+        .all()[offset:limit]
+    )
 
     response = {}
     response["businessRules"] = []
-    rules = fpr_rules.query.filter_by(enabled=True).all()
     for rule in rules:
         command = fpr_commands.query.get(rule.command)
         format = fpr_format_versions.query.get(rule.format)
