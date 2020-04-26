@@ -218,18 +218,22 @@ def formatFamily(guid):
         formatVersions = fpr_format_versions.query.filter_by(format=format.uuid).all()
 
         for formatVersion in formatVersions:
-            if formatVersion.pronom_id != "":
-                newFormatVersion = {
-                    "guid": formatVersion.uuid,
-                    "name": formatVersion.pronom_id,
-                    "namespace": "http://www.nationalarchives.gov.uk",
-                }
+
+            if formatVersion.pronom_id:
+                formatName = formatVersion.pronom_id
+                if formatVersion.pronom_id[:3] == "arc":
+                    formatNamespace = "https://archivematica.org"
+                else:
+                    formatNamespace = "http://www.nationalarchives.uk.gov"
             else:
-                newFormatVersion = {
-                    "guid": formatVersion.uuid,
-                    "name": formatVersion.description,
-                    "namespace": "https://www.archivematica.org",
-                }
+                formatName = formatVersion.description
+                formatNamespace = "https://archivematica.org"
+
+            newFormatVersion = {
+                "guid": formatVersion.uuid,
+                "name": formatName,
+                "namespace": formatNamespace,
+            }
             newFormatVersions.append(newFormatVersion)
 
         response = {
@@ -272,18 +276,21 @@ def formatFamilies():
             ).all()
 
             for formatVersion in formatVersions:
-                if formatVersion.pronom_id != "":
-                    newFormatVersion = {
-                        "guid": formatVersion.uuid,
-                        "name": formatVersion.pronom_id,
-                        "namespace": "http://www.nationalarchives.gov.uk",
-                    }
+                if formatVersion.pronom_id:
+                    formatName = formatVersion.pronom_id
+                    if formatVersion.pronom_id[:3] == "arc":
+                        formatNamespace = "https://archivematica.org"
+                    else:
+                        formatNamespace = "http://www.nationalarchives.uk.gov"
                 else:
-                    newFormatVersion = {
-                        "guid": formatVersion.uuid,
-                        "name": formatVersion.description,
-                        "namespace": "https://www.archivematica.org",
-                    }
+                    formatName = formatVersion.description
+                    formatNamespace = "https://archivematica.org"
+
+                newFormatVersion = {
+                    "guid": formatVersion.uuid,
+                    "name": formatName,
+                    "namespace": formatNamespace,
+                }
                 newFormatVersions.append(newFormatVersion)
 
         newGroup = {
@@ -312,11 +319,15 @@ def fileformat(guid):
     format = fpr_formats.query.get(version.format)
     group = fpr_format_groups.query.get(format.group)
 
-    if version.pronom_id != "":
+    if version.pronom_id:
+        if version.pronom_id[:3] == "arc":
+            namespace = "https://archivematica.org"
+        else:
+            namespace = "http://www.nationalarchives.uk.gov"
         id = {
             "guid": version.uuid,
             "name": version.pronom_id,
-            "namespace": "http://www.nationalarchives.gov.uk",
+            "namespace": namespace,
         }
         identifier = {
             "identifier": version.pronom_id,
@@ -379,11 +390,15 @@ def fileformats():
     for version in versions:
         format = fpr_formats.query.get(version.format)
         group = fpr_format_groups.query.get(format.group)
-        if version.pronom_id != "":
+        if version.pronom_id:
+            if version.pronom_id[:3] == "arc":
+                namespace = "https://archivematica.org"
+            else:
+                namespace = "http://www.nationalarchives.uk.gov"
             id = {
                 "guid": version.uuid,
                 "name": version.pronom_id,
-                "namespace": "http://www.nationalarchives.gov.uk",
+                "namespace": namespace,
             }
             identifier = {
                 "identifier": version.pronom_id,
@@ -395,10 +410,10 @@ def fileformats():
                 "name": version.description,
                 "namespace": "https://archivematica.org",
             }
-            identifier = {
-                "identifier": version.description,
-                "identifierType": "Archivematica description",
-            }
+        identifier = {
+            "identifier": version.description,
+            "identifierType": "Archivematica description",
+        }
         if version.version == "":
             updatedVersion = None
         else:
@@ -502,7 +517,7 @@ def preservationAction(guid):
                 fileFormat = fpr_format_versions.query.filter_by(
                     uuid=rule.format
                 ).first()
-                if fileFormat.pronom_id != "":
+                if fileFormat.pronom_id:
                     inputFormat = (
                         fileFormat.description + " (" + fileFormat.pronom_id + ")"
                     )
@@ -654,7 +669,7 @@ def preservationActions():
                 fileFormat = fpr_format_versions.query.filter_by(
                     uuid=rule.format
                 ).first()
-                if fileFormat.pronom_id != "":
+                if fileFormat.pronom_id:
                     inputFormat = (
                         fileFormat.description + " (" + fileFormat.pronom_id + ")"
                     )
