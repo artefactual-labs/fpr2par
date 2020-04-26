@@ -148,5 +148,25 @@
           "lastmodified": "2020-04-23T12:0:0"
         },
         "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "7d636d4b-3897-4e25-ae00-eec9d0eab620",
+          "name": "unp",
+          "namespace": "https://archivematica.org",
+          "label": "unpacking",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
+    },
+    {
+        "fields": {
+          "uuid": "cd4a4db0-54af-49a7-868a-57aa492bed8c",
+          "name": "fix",
+          "namespace": "https://archivematica.org",
+          "label": "fixity check",
+          "lastmodified": "2020-04-23T12:0:0"
+        },
+        "model": "par.preservationActionTypes"
     }
   ]
