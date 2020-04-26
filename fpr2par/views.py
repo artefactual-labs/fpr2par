@@ -956,7 +956,7 @@ def businessRules():
 
     rules = (
         fpr_rules.query.filter_by(enabled=True)
-        .filter(fpr_format_versions.last_modified.between(after_date, before_date))
+        .filter(fpr_rules.last_modified.between(after_date, before_date))
         .all()[offset:limit]
     )
 
