@@ -11,7 +11,7 @@
 
       <p>This <strong>fpr2par</strong> application makes Archivematica FPR data available via a PAR API. It is open-source software that is available for download and use with your own FPR data. See <a href="https://github.com/artefactual-labs/fpr2par">https://github.com/artefactual-labs/fpr2par</a>.</p>
 
-      <p>See the list below to test examples of PAR API queries that <strong>fpr2par</strong> responds to. You can also use the menus above to browse FPR source data and run sample PAR API queries. Note that individual PAR records can be requested by their GUID (i.e. UUID). Sets of PAR records can be filtered by using "offset" and "limit" filters or they can be returned as the full set of records available in <strong>fpr2par</strong>.</p>
+      <p>See the list below to test examples of PAR API queries that <strong>fpr2par</strong> responds to. You can also use the menus above to browse FPR source data and run sample PAR API queries. Note that individual PAR records can be requested by their GUID (i.e. UUID). Sets of PAR records can be filtered by using "offset" and "limit" filters, "modified-after" and/or "modified-before" date filters, or they can be returned as the full set of records available in <strong>fpr2par</strong>.</p>
 
       <p>To run API queries from your own client:<br/>
         <div class="alert alert-secondary text-monospace"><small>[your terminal] > curl -X GET "{{ apiUrl }}/file-formats?offset=100&limit=20"</small></div>
