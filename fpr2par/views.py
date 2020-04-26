@@ -709,6 +709,11 @@ def preservationActions():
                         "name": inputFormat,
                     }
                 )
+        elif action_type.name == "ide":
+            inputFiles = [{
+                "description": "files that will be acted upon",
+                "name": "[all files]",
+            }]
         else:
             inputFiles = None
 
@@ -730,7 +735,7 @@ def preservationActions():
                     "description": "file that will be created",
                     "name": "%fileFullName%.xml",
                 }
-        elif (action_type.name == "eve") or (action_type.name == "val"):
+        elif action_type.name in ("eve", "val", "ide"):
             outputFiles = {
                 "description": "file where output is recorded",
                 "name": "METS.[AIP UUUD].xml",
