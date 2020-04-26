@@ -1,7 +1,7 @@
 # fpr2par
 Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org/en/docs/archivematica-1.11/user-manual/preservation/preservation-planning/)) data via a Preservation Actions Registry ([PAR](https://openpreservation.org/events/collaborative-preservation-with-par/)) API
 
-Use the instructions below to install your own copy of fpr2par or try an online copy at [http://parcore.dev.archivematica.org:5000/](http://parcore.dev.archivematica.org:5000/).
+Use the instructions below to install your own copy of **fpr2par** or try an online copy at [http://parcore.dev.archivematica.org:5000/](http://parcore.dev.archivematica.org:5000/).
 
 ![screencap](fpr2par-demo.png)
 
