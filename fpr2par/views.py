@@ -563,6 +563,7 @@ def preservationAction(guid):
         response = {
             "description": action.description,
             "example": action.command,
+            "localLastModifiedDate": str(action.last_modified),
             "id": {
                 "guid": action.uuid,
                 "name": action.description,
@@ -599,6 +600,7 @@ def preservationAction(guid):
         response = {
             "description": action.description,
             "example": action.script,
+            "localLastModifiedDate": str(action.last_modified),
             "id": {
                 "guid": action.uuid,
                 "name": action.description,
@@ -657,13 +659,17 @@ def preservationActions():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
-    dpActions = fpr_commands.query.filter_by(enabled=True).filter(
-        fpr_commands.last_modified.between(after_date, before_date)
-    ).all()
+    dpActions = (
+        fpr_commands.query.filter_by(enabled=True)
+        .filter(fpr_commands.last_modified.between(after_date, before_date))
+        .all()
+    )
 
-    dpIDActions = fpr_id_commands.query.filter_by(enabled=True).filter(
-        fpr_id_commands.last_modified.between(after_date, before_date)
-    ).all()
+    dpIDActions = (
+        fpr_id_commands.query.filter_by(enabled=True)
+        .filter(fpr_id_commands.last_modified.between(after_date, before_date))
+        .all()
+    )
 
     all_actions = (dpActions + dpIDActions)[offset:limit]
 
@@ -710,10 +716,9 @@ def preservationActions():
                     }
                 )
         elif action_type.name == "ide":
-            inputFiles = [{
-                "description": "files that will be acted upon",
-                "name": "[all files]",
-            }]
+            inputFiles = [
+                {"description": "files that will be acted upon", "name": "[all files]",}
+            ]
         else:
             inputFiles = None
 
@@ -748,6 +753,7 @@ def preservationActions():
         newAction = {
             "description": action.description,
             "example": action_command,
+            "localLastModifiedDate": str(action.last_modified),
             "id": {
                 "guid": action.uuid,
                 "name": action.description,
@@ -896,9 +902,50 @@ def businessRule(guid):
         + "), use "
         + str(command.fprTool)
     )
+
+    priority = 1
+    preservationActions = []
+    preservationActions.append(
+        {
+            "preservationAction": {
+                "guid": command.uuid,
+                "name": command.description,
+                "namespace": "https://archivematica.org",
+            },
+            "priority": priority,
+        }
+    )
+    if command.verification_command:
+        priority += 1
+        verificationCommand = fpr_commands.query.get(command.verification_command)
+        preservationActions.append(
+            {
+                "preservationAction": {
+                    "guid": verificationCommand.uuid,
+                    "name": verificationCommand.description,
+                    "namespace": "https://archivematica.org",
+                },
+                "priority": priority,
+            }
+        )
+    if command.event_detail_command:
+        priority += 1
+        eventDetailCommand = fpr_commands.query.get(command.event_detail_command)
+        preservationActions.append(
+            {
+                "preservationAction": {
+                    "guid": eventDetailCommand.uuid,
+                    "name": eventDetailCommand.description,
+                    "namespace": "https://archivematica.org",
+                },
+                "priority": priority,
+            }
+        )
+
     actionType = par_preservation_action_types.query.filter_by(
         label=command.command_usage.lower()
     ).first()
+
     response = {
         "id": {
             "guid": rule.uuid,
@@ -908,13 +955,7 @@ def businessRule(guid):
         "formats": [
             {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
         ],
-        "preservationActions": [
-            {
-                "guid": command.uuid,
-                "name": command.description,
-                "namespace": "https://archivematica.org",
-            }
-        ],
+        "preservationActions": [preservationActions],
         "preservationActiontypes": [
             {
                 "id": {
@@ -993,9 +1034,50 @@ def businessRules():
             + "), use "
             + str(command.fprTool)
         )
+
+        priority = 1
+        preservationActions = []
+        preservationActions.append(
+            {
+                "preservationAction": {
+                    "guid": command.uuid,
+                    "name": command.description,
+                    "namespace": "https://archivematica.org",
+                },
+                "priority": priority,
+            }
+        )
+        if command.verification_command:
+            priority += 1
+            verificationCommand = fpr_commands.query.get(command.verification_command)
+            preservationActions.append(
+                {
+                    "preservationAction": {
+                        "guid": verificationCommand.uuid,
+                        "name": verificationCommand.description,
+                        "namespace": "https://archivematica.org",
+                    },
+                    "priority": priority,
+                }
+            )
+        if command.event_detail_command:
+            priority += 1
+            eventDetailCommand = fpr_commands.query.get(command.event_detail_command)
+            preservationActions.append(
+                {
+                    "preservationAction": {
+                        "guid": eventDetailCommand.uuid,
+                        "name": eventDetailCommand.description,
+                        "namespace": "https://archivematica.org",
+                    },
+                    "priority": priority,
+                }
+            )
+
         actionType = par_preservation_action_types.query.filter_by(
             label=command.command_usage.lower()
         ).first()
+
         newRule = {
             "id": {
                 "guid": rule.uuid,
@@ -1005,13 +1087,7 @@ def businessRules():
             "formats": [
                 {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
             ],
-            "preservationActions": [
-                {
-                    "guid": command.uuid,
-                    "name": command.description,
-                    "namespace": "https://archivematica.org",
-                }
-            ],
+            "preservationActions": [preservationActions],
             "preservationActiontypes": [
                 {
                     "id": {
