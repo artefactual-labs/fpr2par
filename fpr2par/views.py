@@ -955,7 +955,7 @@ def businessRule(guid):
         "formats": [
             {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
         ],
-        "preservationActions": [preservationActions],
+        "preservationActions": preservationActions,
         "preservationActiontypes": [
             {
                 "id": {
@@ -1087,7 +1087,7 @@ def businessRules():
             "formats": [
                 {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
             ],
-            "preservationActions": [preservationActions],
+            "preservationActions": preservationActions,
             "preservationActiontypes": [
                 {
                     "id": {
