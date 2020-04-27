@@ -1022,6 +1022,8 @@ def businessRules():
         file_format = fpr_format_versions.query.get(rule.format)
         if format_filter != [] and file_format.pronom_id not in format_filter:
             continue
+        if guid_filter != [] and rule.uuid not in guid_filter:
+            continue
         if file_format.pronom_id:
             formatName = file_format.pronom_id
             if file_format.pronom_id[:3] == "arc":
