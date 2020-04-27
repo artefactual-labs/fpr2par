@@ -1,7 +1,8 @@
 from flask import Flask, render_template, flash, redirect, request, jsonify
 from flask_basicauth import BasicAuth
-from fpr2par import app, db
+from slugify import slugify
 import os
+from fpr2par import app, db
 from .create_fpr2par_database import createdbase
 from .add_fpr2par_data import adddata
 from .delete_fpr2par_database import deletedbase
@@ -18,7 +19,6 @@ from .models import (
     fpr_rules,
     par_preservation_action_types,
 )
-
 from .helpers import _parse_filter_dates, _parse_offset_limit
 
 basic_auth = BasicAuth(app)
@@ -226,7 +226,7 @@ def formatFamily(guid):
                 else:
                     formatNamespace = "http://www.nationalarchives.uk.gov"
             else:
-                formatName = formatVersion.description
+                formatName = slugify(formatVersion.description)
                 formatNamespace = "https://archivematica.org"
 
             newFormatVersion = {
@@ -283,7 +283,7 @@ def formatFamilies():
                     else:
                         formatNamespace = "http://www.nationalarchives.uk.gov"
                 else:
-                    formatName = formatVersion.description
+                    formatName = slugify(formatVersion.description)
                     formatNamespace = "https://archivematica.org"
 
                 newFormatVersion = {
@@ -336,11 +336,11 @@ def fileformat(guid):
     else:
         id = {
             "guid": version.uuid,
-            "name": version.description,
+            "name": slugify(version.description),
             "namespace": "https://archivematica.org",
         }
         identifier = {
-            "identifier": version.description,
+            "identifier": slugify(version.description),
             "identifierType": "Archivematica description",
         }
     if version.version == "":
@@ -407,11 +407,11 @@ def fileformats():
         else:
             id = {
                 "guid": version.uuid,
-                "name": version.description,
+                "name": slugify(version.description),
                 "namespace": "https://archivematica.org",
             }
         identifier = {
-            "identifier": version.description,
+            "identifier": slugify(version.description),
             "identifierType": "Archivematica description",
         }
         if version.version == "":
@@ -522,7 +522,7 @@ def preservationAction(guid):
                         fileFormat.description + " (" + fileFormat.pronom_id + ")"
                     )
                 else:
-                    inputFormat = fileFormat.description
+                    inputFormat = slugify(fileFormat.description)
                 inputFiles.append(
                     {
                         "description": "the file format that will be acted upon",
@@ -708,7 +708,7 @@ def preservationActions():
                         fileFormat.description + " (" + fileFormat.pronom_id + ")"
                     )
                 else:
-                    inputFormat = fileFormat.description
+                    inputFormat = slugify(fileFormat.description)
                 inputFiles.append(
                     {
                         "description": "the file format that will be acted upon",
@@ -880,7 +880,7 @@ def businessRule(guid):
         else:
             formatNamespace = "http://www.nationalarchives.uk.gov"
     else:
-        formatName = format.description
+        formatName = slugify(format.description)
         formatNamespace = "https://archivematica.org"
     name = (
         str(command.fprTool)
@@ -1012,7 +1012,7 @@ def businessRules():
             else:
                 formatNamespace = "http://www.nationalarchives.uk.gov"
         else:
-            formatName = format.description
+            formatName = slugify(format.description)
             formatNamespace = "https://archivematica.org"
         name = (
             str(command.fprTool)
