@@ -19,7 +19,18 @@ from .models import (
     fpr_rules,
     par_preservation_action_types,
 )
-from .helpers import _parse_filter_dates, _parse_offset_limit
+
+from .helpers import (
+    # Parse functions associated with various API filter options.
+    _parse_filter_dates,
+    _parse_filter_headers,
+    _parse_offset_limit,
+    # Filter values associated with various API filter options.
+    GUID_HEADER,
+    FILE_FORMAT_HEADER,
+    PRESERVATION_ACT_HEADER,
+    TOOL_HEADER,
+)
 
 basic_auth = BasicAuth(app)
 
@@ -1004,33 +1015,33 @@ def businessRules():
     response["businessRules"] = []
     for rule in rules:
         command = fpr_commands.query.get(rule.command)
-        format = fpr_format_versions.query.get(rule.format)
-        if format.pronom_id:
-            formatName = format.pronom_id
-            if format.pronom_id[:3] == "arc":
+        file_format = fpr_format_versions.query.get(rule.format)
+        if file_format.pronom_id:
+            formatName = file_format.pronom_id
+            if file_format.pronom_id[:3] == "arc":
                 formatNamespace = "https://archivematica.org"
             else:
                 formatNamespace = "http://www.nationalarchives.uk.gov"
         else:
-            formatName = slugify(format.description)
+            formatName = slugify(file_format.description)
             formatNamespace = "https://archivematica.org"
         name = (
             str(command.fprTool)
             + "-"
             + rule.purpose
             + "-"
-            + format.description
+            + file_format.description
             + "("
-            + format.pronom_id
+            + file_format.pronom_id
             + ")"
         )
         description = (
             "For "
             + rule.purpose
             + " of "
-            + format.description
+            + file_format.description
             + "("
-            + format.pronom_id
+            + file_format.pronom_id
             + "), use "
             + str(command.fprTool)
         )
@@ -1085,7 +1096,7 @@ def businessRules():
                 "namespace": "https://archivematica.org",
             },
             "formats": [
-                {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
+                {"guid": file_format.uuid, "name": formatName, "namespace": formatNamespace}
             ],
             "preservationActions": preservationActions,
             "preservationActiontypes": [
