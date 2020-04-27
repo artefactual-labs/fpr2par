@@ -669,6 +669,9 @@ def preservationActions():
 
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
+    headers = _parse_filter_headers(request)
+    preservation_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
+    tool_filter = headers.get(TOOL_HEADER, None)
 
     dpActions = (
         fpr_commands.query.filter_by(enabled=True)
@@ -849,6 +852,9 @@ def tools():
     response["tools"] = []
 
     offset, limit = _parse_offset_limit(request)
+    headers = _parse_filter_headers(request)
+    tools_filter = headers.get(TOOL_HEADER, None)
+
 
     # only include enabled tools.
     tools = fpr_tools.query.filter_by(enabled=True).all()
