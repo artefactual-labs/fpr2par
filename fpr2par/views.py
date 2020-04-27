@@ -1025,27 +1025,17 @@ def businessRules():
         else:
             formatName = slugify(file_format.description)
             formatNamespace = "https://archivematica.org"
-        name = (
-            str(command.fprTool)
-            + "-"
-            + rule.purpose
-            + "-"
-            + file_format.description
-            + "("
-            + file_format.pronom_id
-            + ")"
+        name = "{}-{}-{}({})".format(
+            command.fprTool,
+            rule.purpose,
+            file_format.description.strip(),
+            file_format.pronom_id)
+        description = "For {} of {} ({}), use {}".format(
+            rule.purpose,
+            file_format.description.strip(),
+            file_format.pronom_id,
+            command.fprTool,
         )
-        description = (
-            "For "
-            + rule.purpose
-            + " of "
-            + file_format.description
-            + "("
-            + file_format.pronom_id
-            + "), use "
-            + str(command.fprTool)
-        )
-
         priority = 1
         preservationActions = []
         preservationActions.append(
