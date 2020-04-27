@@ -1005,6 +1005,10 @@ def businessRules():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
+    headers = _parse_filter_headers(request)
+    guid_filter = headers.get(GUID_HEADER, None)
+    format_filter = headers.get(FILE_FORMAT_HEADER, None)
+
     rules = (
         fpr_rules.query.filter_by(enabled=True)
         .filter(fpr_rules.last_modified.between(after_date, before_date))
@@ -1016,6 +1020,8 @@ def businessRules():
     for rule in rules:
         command = fpr_commands.query.get(rule.command)
         file_format = fpr_format_versions.query.get(rule.format)
+        if format_filter != [] and file_format.pronom_id not in format_filter:
+            continue
         if file_format.pronom_id:
             formatName = file_format.pronom_id
             if file_format.pronom_id[:3] == "arc":
