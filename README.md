@@ -3,6 +3,8 @@ Access Archivematica Format Policy Registry ([FPR](https://www.archivematica.org
 
 Use the instructions below to install your own copy of **fpr2par** or try an online copy at [http://parcore.dev.archivematica.org:5000/](http://parcore.dev.archivematica.org:5000/).
 
+See the [project wiki](https://github.com/artefactual-labs/fpr2par/wiki) for the latest development notes.
+
 ![screencap](fpr2par-demo.png)
 
 # Installation instructions
