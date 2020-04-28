@@ -386,6 +386,10 @@ def fileformats():
 
     * <uri>/api/par/file-formats?modified-before=2020-01-01&modified-after=1970-01-01
 
+    As well as limit by a list of file format PUIDs sent as request headers (optional)
+
+    * curl -v -H "Accept: application/json" -H ""file-format": "fmt/199, fmt/81, x-fmt/10"" "<uri>/api/par/file-formats
+
     """
 
     # Filter parsing using request headers.
