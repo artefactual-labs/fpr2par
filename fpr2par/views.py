@@ -865,10 +865,17 @@ def tools():
     headers = _parse_filter_headers(request)
     tools_filter = headers.get(TOOL_HEADER, None)
 
+    # Only include enabled tools.
+    tools = fpr_tools.query.filter_by(enabled=True)
+    id_tools = fpr_id_tools.query.filter_by(enabled=True)
 
-    # only include enabled tools.
-    tools = fpr_tools.query.filter_by(enabled=True).all()
-    id_tools = fpr_id_tools.query.filter_by(enabled=True).all()
+    # If we have a filter, only include tools that we've requested.
+    if tools_filter != []:
+        tools = tools.filter(fpr_tools.uuid.in_(tools_filter)).all()
+        id_tools = id_tools.filter(fpr_id_tools.uuid.in_(tools_filter)).all()
+    else:
+        tools = tools.all()
+        id_tools = id_tools.all()
 
     # concatenate our two lists.
     new_tools = (tools + id_tools)[offset:limit]
