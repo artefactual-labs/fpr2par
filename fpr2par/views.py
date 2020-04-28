@@ -516,64 +516,119 @@ def preservationAction(guid):
     """
     action = fpr_commands.query.get(guid)
     if action:
-        type = par_preservation_action_types.query.filter_by(
+        action_type = par_preservation_action_types.query.filter_by(
             label=action.command_usage.lower()
         ).first()
         tool = fpr_tools.query.get(action.tool)
+        action_label = action.command_usage.lower()
+        action_command = action.command
 
-        rules = fpr_rules.query.filter_by(command=action.uuid).all()
-        if rules:
-            inputFiles = []
-            for rule in rules:
-                fileFormat = fpr_format_versions.query.filter_by(
-                    uuid=rule.format
-                ).first()
-                if fileFormat.pronom_id:
-                    inputFormat = (
-                        fileFormat.description + " (" + fileFormat.pronom_id + ")"
+        constraints = []
+        rules = fpr_rules.query.filter_by(command=action.uuid, enabled=True).all()
+
+        if not rules:
+            # check to see if we're dealing with an event_detail command
+            commands = fpr_commands.query.filter_by(
+                event_detail_command=action.uuid, enabled=True
+            ).all()
+            if commands:
+                for command in commands:
+                    rules = (
+                        rules
+                        + fpr_rules.query.filter_by(
+                            command=command.uuid, enabled=True
+                        ).all()
                     )
-                else:
-                    inputFormat = slugify(fileFormat.description)
-                inputFiles.append(
-                    {
-                        "description": "the file format that will be acted upon",
-                        "name": inputFormat,
+        if not rules:
+            # check to see if we're dealing with a verification command
+            commands = fpr_commands.query.filter_by(
+                verification_command=action.uuid, enabled=True
+            )
+            if commands:
+                for command in commands:
+                    rules = (
+                        rules
+                        + fpr_rules.query.filter_by(
+                            command=command.uuid, enabled=True
+                        ).all()
+                    )
+        if rules:
+            for rule in rules:
+                version = fpr_format_versions.query.filter_by(uuid=rule.format).first()
+                if version.pronom_id:
+                    if version.pronom_id[:3] == "arc":
+                        namespace = "https://archivematica.org"
+                    else:
+                        namespace = "http://www.nationalarchives.uk.gov"
+                    id = {
+                        "guid": version.uuid,
+                        "name": version.pronom_id,
+                        "namespace": namespace,
                     }
+                else:
+                    id = {
+                        "guid": version.uuid,
+                        "name": slugify(version.description),
+                        "namespace": "https://archivematica.org",
+                    }
+                constraints.append(
+                    {"id": id, "localLastModifiedDate": str(version.last_modified),}
                 )
+
+        # a rough heuristic for determining inpuFiles names (since FPR does not
+        # record this information separately)
+        if "%inputFile%" in action.command:
+            inputFile = "%inputFile"
+        elif "%fileFullName" in action.command:
+            inputFile = "%fileFullName%"
+        elif "%relativeLocation%" in action.command:
+            inputFile = "%relativeLocation"
+        elif "$ocrfiles" in action.command:
+            inputFile = "$ocrfiles"
         else:
-            inputFiles = None
+            inputFile = "%inputFile%"
+        inputFiles = {
+            "description": "The file that will be acted upon",
+            "name": inputFile,
+        }
 
         # a rough heuristic for determining ouptFiles name (since FPR does not
         # record this information separately)
-        if (type.name == "tra") or (type.name == "nor"):
+        if (action_type.name == "tra") or (action_type.name == "nor"):
             outputFiles = {
-                "description": "file that will be created",
+                "description": "The file that will be created",
                 "name": action.output_location,
             }
-        elif type.name == "cha":
+        elif action_type.name == "cha":
             if action.description == "FITS":
                 outputFiles = {
-                    "description": "file that will be created",
+                    "description": "The file that will be created",
                     "name": "fits.xml",
                 }
             else:
                 outputFiles = {
-                    "description": "file that will be created",
+                    "description": "The file that will be created",
                     "name": "%fileFullName%.xml",
                 }
-        elif (type.name == "eve") or (type.name == "val"):
+        elif action_type.name in ("eve", "val", "ide"):
             outputFiles = {
-                "description": "file where output is recorded",
+                "description": "The file where output is recorded",
                 "name": "METS.[AIP UUUD].xml",
             }
-        elif type.name == "ext":
-            outputFiles = {"description": "[all extracted files]"}
+        elif action_type.name == "ext":
+            outputFiles = {
+                "description": "The file that will be extracted",
+                "name": "%outputDirector%/%fileFullName%",
+            }
         else:
             outputFiles = None
 
         response = {
+            "constraints": {
+                "items": {"properties": {"allowedFormats": {"items": constraints,},},},
+            },
             "description": action.description,
-            "example": action.command,
+            "example": action_command,
             "localLastModifiedDate": str(action.last_modified),
             "id": {
                 "guid": action.uuid,
@@ -591,11 +646,11 @@ def preservationAction(guid):
             },
             "type": {
                 "id": {
-                    "guid": type.uuid,
-                    "name": type.name,
+                    "guid": action_type.uuid,
+                    "name": action_type.name,
                     "namespace": "https://archivematica.org",
                 },
-                "label": action.command_usage.lower(),
+                "label": action_label,
             },
             "inputFiles": [inputFiles],
             "outputFiles": [outputFiles],
@@ -606,9 +661,39 @@ def preservationAction(guid):
         type = par_preservation_action_types.query.get(
             "d3c7ef45-5c58-4897-b145-d41afbf82c61"
         )
-
         tool = fpr_id_tools.query.get(action.id_tool)
+
+        constraints = "all"
+        # get constraints if tool is ID by File Extension
+        if action.uuid == "41efbe1b-3fc7-4b24-9290-d0fb5d0ea9e9":
+            formats = fpr_id_rules.query.filter_by(
+                command="41efbe1b-3fc7-4b24-9290-d0fb5d0ea9e9"
+            )
+            for version in formats:
+                if version.pronom_id:
+                    if version.pronom_id[:3] == "arc":
+                        namespace = "https://archivematica.org"
+                    else:
+                        namespace = "http://www.nationalarchives.uk.gov"
+                        id = {
+                            "guid": version.uuid,
+                            "name": version.pronom_id,
+                            "namespace": namespace,
+                        }
+                else:
+                    id = {
+                        "guid": version.uuid,
+                        "name": slugify(version.description),
+                        "namespace": "https://archivematica.org",
+                    }
+                constraints.append(
+                    {"id": id, "localLastModifiedDate": str(version.last_modified),}
+                )
+
         response = {
+            "constraints": {
+                "items": {"properties": {"allowedFormats": {"items": constraints,},},},
+            },
             "description": action.description,
             "example": action.script,
             "localLastModifiedDate": str(action.last_modified),
@@ -635,7 +720,10 @@ def preservationAction(guid):
                 "label": type.label,
             },
             "inputFiles": [
-                {"description": "files that will be acted upon", "name": "[all files]",}
+                {
+                    "description": "The file that will be acted upon",
+                    "name": "%inputFile%",
+                }
             ],
             "outputFiles": [
                 {
@@ -704,6 +792,11 @@ def preservationActions():
             tool = fpr_id_tools.query.get(action.id_tool)
             action_label = action_type.label
             action_command = action.script
+            inputFiles = {
+                "description": "The file that will be acted upon",
+                "name": "%inputFile%",
+            }
+            constraints = "all"
         except AttributeError:
             # We don't have an ID tool so set action type differently.
             action_type = par_preservation_action_types.query.filter_by(
@@ -712,6 +805,7 @@ def preservationActions():
             tool = fpr_tools.query.get(action.tool)
             action_label = action.command_usage.lower()
             action_command = action.command
+            constraints = []
 
         # Apply header-based filtering.
         if guid_filter != [] and action.uuid not in guid_filter:
@@ -721,61 +815,109 @@ def preservationActions():
         if pres_act_filter != [] and action_type.uuid not in pres_act_filter:
             continue
 
-        rules = fpr_rules.query.filter_by(command=action.uuid).all()
-        if rules:
-            inputFiles = []
-            for rule in rules:
-                fileFormat = fpr_format_versions.query.filter_by(
-                    uuid=rule.format
-                ).first()
-                if fileFormat.pronom_id:
-                    inputFormat = (
-                        fileFormat.description + " (" + fileFormat.pronom_id + ")"
+        rules = fpr_rules.query.filter_by(command=action.uuid, enabled=True).all()
+
+        if not rules:
+            # check to see if we're dealing with an event_detail command
+            commands = fpr_commands.query.filter_by(
+                event_detail_command=action.uuid, enabled=True
+            ).all()
+            if commands:
+                for command in commands:
+                    rules = (
+                        rules
+                        + fpr_rules.query.filter_by(
+                            command=command.uuid, enabled=True
+                        ).all()
                     )
-                else:
-                    inputFormat = slugify(fileFormat.description)
-                inputFiles.append(
-                    {
-                        "description": "the file format that will be acted upon",
-                        "name": inputFormat,
+        if not rules:
+            # check to see if we're dealing with a verification command
+            commands = fpr_commands.query.filter_by(
+                verification_command=action.uuid, enabled=True
+            )
+            if commands:
+                for command in commands:
+                    rules = (
+                        rules
+                        + fpr_rules.query.filter_by(
+                            command=command.uuid, enabled=True
+                        ).all()
+                    )
+        if rules:
+            for rule in rules:
+                version = fpr_format_versions.query.filter_by(uuid=rule.format).first()
+                if version.pronom_id:
+                    if version.pronom_id[:3] == "arc":
+                        namespace = "https://archivematica.org"
+                    else:
+                        namespace = "http://www.nationalarchives.uk.gov"
+                    id = {
+                        "guid": version.uuid,
+                        "name": version.pronom_id,
+                        "namespace": namespace,
                     }
+                else:
+                    id = {
+                        "guid": version.uuid,
+                        "name": slugify(version.description),
+                        "namespace": "https://archivematica.org",
+                    }
+                constraints.append(
+                    {"id": id, "localLastModifiedDate": str(version.last_modified),}
                 )
-        elif action_type.name == "ide":
-            inputFiles = [
-                {"description": "files that will be acted upon", "name": "[all files]",}
-            ]
-        else:
-            inputFiles = None
+
+            # a rough heuristic for determining inpuFiles names (since FPR does not
+            # record this information separately)
+            if "%inputFile%" in action.command:
+                inputFile = "%inputFile"
+            elif "%fileFullName" in action.command:
+                inputFile = "%fileFullName%"
+            elif "%relativeLocation%" in action.command:
+                inputFile = "%relativeLocation"
+            elif "$ocrfiles" in action.command:
+                inputFile = "$ocrfiles"
+            else:
+                inputFile = "%inputFile%"
+            inputFiles = {
+                "description": "The file that will be acted upon",
+                "name": inputFile,
+            }
 
         # a rough heuristic for determining ouptFiles name (since FPR does not
         # record this information separately)
         if (action_type.name == "tra") or (action_type.name == "nor"):
             outputFiles = {
-                "description": "file that will be created",
+                "description": "The file that will be created",
                 "name": action.output_location,
             }
         elif action_type.name == "cha":
             if action.description == "FITS":
                 outputFiles = {
-                    "description": "file that will be created",
+                    "description": "The file that will be created",
                     "name": "fits.xml",
                 }
             else:
                 outputFiles = {
-                    "description": "file that will be created",
+                    "description": "The file that will be created",
                     "name": "%fileFullName%.xml",
                 }
         elif action_type.name in ("eve", "val", "ide"):
             outputFiles = {
-                "description": "file where output is recorded",
+                "description": "The file where output is recorded",
                 "name": "METS.[AIP UUUD].xml",
             }
         elif action_type.name == "ext":
-            outputFiles = {"description": "[all extracted files]"}
+            outputFiles = {
+                "description": "The file that will be extracted",
+                "name": "%outputDirector%/%fileFullName%",
+            }
         else:
             outputFiles = None
 
         newAction = {
+            "constraints": {
+                "items": {"properties": {"allowedFormats": {"items": constraints,},},},
+            },
             "description": action.description,
             "example": action_command,
             "localLastModifiedDate": str(action.last_modified),
@@ -1005,7 +1147,7 @@ def businessRule(guid):
         ],
         "localLastModifiedDate": str(rule.last_modified),
         "description": description,
-        "notes": "This rule has been automatically parsed from Archivematica FPR values and needs further editing.",
+        "notes": "This rule has been automatically generated from Archivematica FPR values.",
     }
 
     return jsonify(response)
@@ -1145,7 +1287,7 @@ def businessRules():
             ],
             "localLastModifiedDate": str(rule.last_modified),
             "description": description,
-            "notes": "This rule has been automatically parsed from Archivematica FPR values and needs further editing.",
+            "notes": "This rule has been automatically generated from Archivematica FPR values.",
         }
         response["businessRules"].append(newRule)
 
