@@ -36,7 +36,7 @@
 <hr />
 
 <div class="container-fluid">
-      <div class="alert alert-info"><h4 class="h3">Example PAR API requests</h4></div>
+      <div class="alert alert-info"><h4 class="h3">Example PAR API requests (using URLs)</h4></div>
         <table class="table table-bordered table-condensed">
           <tr><td><strong>Format family by GUID:</strong></td><td><div class="alert alert-secondary text-monospace"><small><a href="api/par/format-families/c94ce0e6-c275-4c09-b802-695a18b7bf2a">{{apiUrl}}/format-families/c94ce0e6-c275-4c09-b802-695a18b7bf2a</a></small></div></td></tr>
           <tr><td><strong>Format families (with offset and limit):</strong></td><td><div class="alert alert-secondary text-monospace"><small><a href="api/par/format-families?offset=0&limit=3">{{apiUrl}}/format-families?offset=0&limit=3</a></small></div></td></tr>
@@ -61,5 +61,23 @@
           <tr><td><strong>All business rules:</strong></td><td><div class="alert alert-secondary text-monospace"><small><a href="api/par/business-rules">{{apiUrl}}/business-rules</a></small></div></td></tr>
         </table>
 </div>
+
+<div class="container-fluid">
+      <div class="alert alert-info"><h4 class="h3">Example PAR API requests (filtered by HTTP headers)</h4></div>
+      <p>This requires the use of a HTTP client like <a href="https://curl.haxx.se/">Curl</a> or <a href="https://www.postman.com/product/api-client">Postman</a> to include header values in HTTP requests.</p>
+        <table class="table table-bordered table-condensed">
+          <tr><td><strong>Request file formats limited by a list of PUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""file-format": "fmt/199, fmt/81, x-fmt/10"" "{{apiUrl}}/file-formats</small></div></td></tr>
+          <tr><td><strong>Request preservation actions limited by a list of GUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""guid": "e1b71449-8822-49ac-9d8a-b7ed6f960ec8, 1628571b-c2cd-4822-afdb-53561400c7c4"" "{{apiUrl}}/preservation-actions"</small></div></td></tr>
+          <tr><td><strong>Request preservation actions limited by a list of tool GUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""tool": "0a78f98a-9484-431a-9759-59e5d1d09281,bb957e1d-ee63-4354-a209-a41d23881e3e"" "{{apiUrl}}/preservation-actions"</small></div></td></tr>
+          <tr><td><strong>Request preservation actions limited by a list of preservation action type GUIDs:<strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""preservation-action-type": "de6b59ee-4996-44de-86f6-8d7a270e3bb6"" "{{apiUrl}}/preservation-actions"</small></div></td></tr>
+          <tr><td><strong>Request business rules limited by a list of GUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""guid": "2bb6afc9-3c1b-4827-8758-a9c3de1e0b84, 5c9685e7-5694-4275-a4a7-c3ebdb6aa88a"" "{{apiUrl}}/business-rules"</small></div></td></tr>
+          <tr><td><strong>Request business rules limited by a list of file format PUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""file-format": "fmt/437, fmt/367"" "{{apiUrl}}/business-rules"</small></div></td></tr>
+          <tr><td><strong>Request business rules limited by a list of preservation action type GUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""preservation-action-type": "ac87e824-0cd5-4416-9b64-875f030c05b1, de6b59ee-4996-44de-86f6-8d7a270e3bb6"" "{{apiUrl}}/business-rules"</small></div></td></tr>
+          <tr><td><strong>Request tools limited by a list of GUIDs:</strong></td><td><div class="alert alert-secondary text-monospace"><small>curl -v -H "Accept: application/json" -H ""guid": "246ad3d4-6a5d-466b-a35c-26c1323d198e, "23e90197-a00e-4e37-a0cc-77f01aec9309" "{{apiUrl}}/tools"</small></div></td></tr>
+        </table>
+</div>
+
+
+
 
 {% endblock %}
