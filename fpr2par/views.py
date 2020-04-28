@@ -1008,7 +1008,7 @@ def tools():
 
     # Filter parsing using request headers.
     headers = _parse_filter_headers(request)
-    tools_filter = headers.get(TOOL_HEADER, None)
+    tools_filter = headers.get(GUID_HEADER, None)
 
     # Only include enabled tools.
     tools = fpr_tools.query.filter_by(enabled=True)
