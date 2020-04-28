@@ -794,7 +794,7 @@ def preservationActions():
         .all()
     )
 
-    all_actions = (dpActions + dpIDActions)[offset:limit]
+    all_actions = dpActions + dpIDActions
 
     for action in all_actions:
 
@@ -966,6 +966,7 @@ def preservationActions():
         }
         response["preservationActions"].append(newAction)
 
+    response["preservationActions"] = response["preservationActions"][offset:limit]
     return jsonify(response)
 
 
@@ -1045,7 +1046,7 @@ def tools():
         id_tools = id_tools.all()
 
     # concatenate our two lists.
-    new_tools = (tools + id_tools)[offset:limit]
+    new_tools = tools + id_tools
 
     for tool in new_tools:
         newTool = {
@@ -1059,6 +1060,7 @@ def tools():
         }
         response["tools"].append(newTool)
 
+    response["tools"] = response["tools"][offset:limit]
     return jsonify(response)
 
 
@@ -1213,7 +1215,7 @@ def businessRules():
     rules = (
         fpr_rules.query.filter_by(enabled=True)
         .filter(fpr_rules.last_modified.between(after_date, before_date))
-        .all()[offset:limit]
+        .all()
     )
 
     response = {}
@@ -1322,4 +1324,5 @@ def businessRules():
         }
         response["businessRules"].append(newRule)
 
+    response["businessRules"] = response["businessRules"][offset:limit]
     return jsonify(response)
