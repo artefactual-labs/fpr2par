@@ -760,6 +760,15 @@ def preservationActions():
 
     * <uri>/api/par/preservation-actions?modified-before=2020-01-01&modified-after=1970-01-01
 
+    As well as limit by preservation-action (GUID), tool (GUID), and
+    preservation-action-type (GUID) request header parameters (all optional):
+
+    * curl -v -H "Accept: application/json" -H ""guid": "e1b71449-8822-49ac-9d8a-b7ed6f960ec8, 1628571b-c2cd-4822-afdb-53561400c7c4"" "<uri>/api/par/preservation-actions"
+
+    * curl -v -H "Accept: application/json" -H ""tool": "0a78f98a-9484-431a-9759-59e5d1d09281,bb957e1d-ee63-4354-a209-a41d23881e3e"" "<uri>/api/par/preservation-actions"
+
+    * curl -v -H "Accept: application/json" -H ""preservation-action-type": "de6b59ee-4996-44de-86f6-8d7a270e3bb6"" "<uri>/api/par/preservation-actions"
+
     """
     response = {}
     response["preservationActions"] = []
@@ -1008,6 +1017,10 @@ def tools():
 
     * <uri>/api/par/tools?limit=3&offset=0
 
+    As well as limit by list of tools (GUID) in request parameter header  (optional):
+
+    * curl -v -H "Accept: application/json" -H ""guid": "246ad3d4-6a5d-466b-a35c-26c1323d198e, "23e90197-a00e-4e37-a0cc-77f01aec9309" "<uri>/api/par/tools"
+
     """
 
     response = {}
@@ -1173,9 +1186,18 @@ def businessRules():
 
     * <uri>/api/par/business-rules?limit=1&offset=10
 
-    As well as limit by modified before and after dates (both optional)
+    As well as limit by modified before and after dates (both optional):
 
     * <uri>/api/par/business-rules?modified-before=2020-01-01&modified-after=1970-01-01
+
+    As well as limit by business-rule (GUID), file-format (PUID), and
+    preservation-action-type (GUID) request header parameters (all optional):
+
+    * curl -v -H "Accept: application/json" -H ""guid": "2bb6afc9-3c1b-4827-8758-a9c3de1e0b84, 5c9685e7-5694-4275-a4a7-c3ebdb6aa88a"" "<uri>/api/par/business-rules"
+
+    * curl -v -H "Accept: application/json" -H ""file-format": "fmt/437, fmt/367"" "<uri>/api/par/business-rules"
+
+    * curl -v -H "Accept: application/json" -H ""preservation-action-type": "ac87e824-0cd5-4416-9b64-875f030c05b1, de6b59ee-4996-44de-86f6-8d7a270e3bb6"" "<uri>/api/par/business-rules"
 
     """
 
