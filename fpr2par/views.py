@@ -1014,6 +1014,7 @@ def businessRules():
     headers = _parse_filter_headers(request)
     guid_filter = headers.get(GUID_HEADER, None)
     format_filter = headers.get(FILE_FORMAT_HEADER, None)
+    pres_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
 
     rules = (
         fpr_rules.query.filter_by(enabled=True)
@@ -1092,6 +1093,9 @@ def businessRules():
         actionType = par_preservation_action_types.query.filter_by(
             label=command.command_usage.lower()
         ).first()
+
+        if pres_act_filter != [] and actionType.uuid not in pres_act_filter:
+            continue
 
         newRule = {
             "id": {
