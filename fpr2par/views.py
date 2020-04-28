@@ -388,6 +388,10 @@ def fileformats():
 
     """
 
+    # Filter parsing using request headers.
+    headers = _parse_filter_headers(request)
+    format_filter = headers.get(FILE_FORMAT_HEADER, None)
+
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
@@ -399,6 +403,11 @@ def fileformats():
     response["fileFormats"] = []
 
     for version in versions:
+        if format_filter != []:
+            if version.pronom_id not in format_filter:
+                continue
+            if version.pronom_id is "":
+                continue
         format = fpr_formats.query.get(version.format)
         group = fpr_format_groups.query.get(format.group)
         if version.pronom_id:
