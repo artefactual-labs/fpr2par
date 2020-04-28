@@ -674,6 +674,7 @@ def preservationActions():
     headers = _parse_filter_headers(request)
     pres_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
     tool_filter = headers.get(TOOL_HEADER, None)
+    guid_filter = headers.get(GUID_HEADER, None)
 
     dpActions = (
         fpr_commands.query.filter_by(enabled=True)
@@ -713,6 +714,8 @@ def preservationActions():
             action_command = action.command
 
         # Apply header-based filtering.
+        if guid_filter != [] and action.uuid not in guid_filter:
+            continue
         if tool_filter != [] and tool.uuid not in tool_filter:
             continue
         if pres_act_filter != [] and action_type.uuid not in pres_act_filter:
@@ -1062,7 +1065,8 @@ def businessRules():
             command.fprTool,
             rule.purpose,
             file_format.description.strip(),
-            file_format.pronom_id)
+            file_format.pronom_id,
+        )
         description = "For {} of {} ({}), use {}".format(
             rule.purpose,
             file_format.description.strip(),
@@ -1122,7 +1126,11 @@ def businessRules():
                 "namespace": "https://archivematica.org",
             },
             "formats": [
-                {"guid": file_format.uuid, "name": formatName, "namespace": formatNamespace}
+                {
+                    "guid": file_format.uuid,
+                    "name": formatName,
+                    "namespace": formatNamespace,
+                }
             ],
             "preservationActions": preservationActions,
             "preservationActiontypes": [
