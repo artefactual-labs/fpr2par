@@ -29,6 +29,7 @@ from .helpers import (
     GUID_HEADER,
     FILE_FORMAT_HEADER,
     PRESERVATION_ACT_HEADER,
+    TOOL_HEADER,
 )
 
 basic_auth = BasicAuth(app)
