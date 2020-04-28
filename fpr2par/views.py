@@ -669,8 +669,10 @@ def preservationActions():
 
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
+
+    # Filter parsing using request headers.
     headers = _parse_filter_headers(request)
-    preservation_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
+    pres_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
     tool_filter = headers.get(TOOL_HEADER, None)
 
     dpActions = (
@@ -709,6 +711,12 @@ def preservationActions():
             tool = fpr_tools.query.get(action.tool)
             action_label = action.command_usage.lower()
             action_command = action.command
+
+        # Apply header-based filtering.
+        if tool_filter != [] and tool.uuid not in tool_filter:
+            continue
+        if pres_act_filter != [] and action_type.uuid not in pres_act_filter:
+            continue
 
         rules = fpr_rules.query.filter_by(command=action.uuid).all()
         if rules:
@@ -852,6 +860,8 @@ def tools():
     response["tools"] = []
 
     offset, limit = _parse_offset_limit(request)
+
+    # Filter parsing using request headers.
     headers = _parse_filter_headers(request)
     tools_filter = headers.get(TOOL_HEADER, None)
 
@@ -1011,6 +1021,7 @@ def businessRules():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
+    # Filter parsing using request headers.
     headers = _parse_filter_headers(request)
     guid_filter = headers.get(GUID_HEADER, None)
     format_filter = headers.get(FILE_FORMAT_HEADER, None)
