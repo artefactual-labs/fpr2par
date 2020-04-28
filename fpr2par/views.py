@@ -391,6 +391,10 @@ def fileformats():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
+    # Filter parsing using request headers.
+    headers = _parse_filter_headers(request)
+    format_filter = headers.get(FILE_FORMAT_HEADER, None)
+
     versions = fpr_format_versions.query.filter(
         fpr_format_versions.last_modified.between(after_date, before_date)
     ).all()[offset:limit]
@@ -399,8 +403,12 @@ def fileformats():
     response["fileFormats"] = []
 
     for version in versions:
-        format = fpr_formats.query.get(version.format)
-        group = fpr_format_groups.query.get(format.group)
+
+        if format_filter != [] and version.pronom_id not in format_filter:
+            continue
+
+        file_format = fpr_formats.query.get(version.format)
+        group = fpr_format_groups.query.get(file_format.group)
         if version.pronom_id:
             if version.pronom_id[:3] == "arc":
                 namespace = "https://archivematica.org"
