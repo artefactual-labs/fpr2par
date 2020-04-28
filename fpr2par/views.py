@@ -19,7 +19,18 @@ from .models import (
     fpr_rules,
     par_preservation_action_types,
 )
-from .helpers import _parse_filter_dates, _parse_offset_limit
+
+from .helpers import (
+    # Parse functions associated with various API filter options.
+    _parse_filter_dates,
+    _parse_filter_headers,
+    _parse_offset_limit,
+    # Filter values associated with various API filter options.
+    GUID_HEADER,
+    FILE_FORMAT_HEADER,
+    PRESERVATION_ACT_HEADER,
+    TOOL_HEADER,
+)
 
 basic_auth = BasicAuth(app)
 
@@ -659,6 +670,11 @@ def preservationActions():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
+    # Filter parsing using request headers.
+    headers = _parse_filter_headers(request)
+    pres_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
+    tool_filter = headers.get(TOOL_HEADER, None)
+
     dpActions = (
         fpr_commands.query.filter_by(enabled=True)
         .filter(fpr_commands.last_modified.between(after_date, before_date))
@@ -695,6 +711,12 @@ def preservationActions():
             tool = fpr_tools.query.get(action.tool)
             action_label = action.command_usage.lower()
             action_command = action.command
+
+        # Apply header-based filtering.
+        if tool_filter != [] and tool.uuid not in tool_filter:
+            continue
+        if pres_act_filter != [] and action_type.uuid not in pres_act_filter:
+            continue
 
         rules = fpr_rules.query.filter_by(command=action.uuid).all()
         if rules:
@@ -839,9 +861,21 @@ def tools():
 
     offset, limit = _parse_offset_limit(request)
 
-    # only include enabled tools.
-    tools = fpr_tools.query.filter_by(enabled=True).all()
-    id_tools = fpr_id_tools.query.filter_by(enabled=True).all()
+    # Filter parsing using request headers.
+    headers = _parse_filter_headers(request)
+    tools_filter = headers.get(TOOL_HEADER, None)
+
+    # Only include enabled tools.
+    tools = fpr_tools.query.filter_by(enabled=True)
+    id_tools = fpr_id_tools.query.filter_by(enabled=True)
+
+    # If we have a filter, only include tools that we've requested.
+    if tools_filter != []:
+        tools = tools.filter(fpr_tools.uuid.in_(tools_filter)).all()
+        id_tools = id_tools.filter(fpr_id_tools.uuid.in_(tools_filter)).all()
+    else:
+        tools = tools.all()
+        id_tools = id_tools.all()
 
     # concatenate our two lists.
     new_tools = (tools + id_tools)[offset:limit]
@@ -994,6 +1028,12 @@ def businessRules():
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
+    # Filter parsing using request headers.
+    headers = _parse_filter_headers(request)
+    guid_filter = headers.get(GUID_HEADER, None)
+    format_filter = headers.get(FILE_FORMAT_HEADER, None)
+    pres_act_filter = headers.get(PRESERVATION_ACT_HEADER, None)
+
     rules = (
         fpr_rules.query.filter_by(enabled=True)
         .filter(fpr_rules.last_modified.between(after_date, before_date))
@@ -1004,37 +1044,31 @@ def businessRules():
     response["businessRules"] = []
     for rule in rules:
         command = fpr_commands.query.get(rule.command)
-        format = fpr_format_versions.query.get(rule.format)
-        if format.pronom_id:
-            formatName = format.pronom_id
-            if format.pronom_id[:3] == "arc":
+        file_format = fpr_format_versions.query.get(rule.format)
+        if format_filter != [] and file_format.pronom_id not in format_filter:
+            continue
+        if guid_filter != [] and rule.uuid not in guid_filter:
+            continue
+        if file_format.pronom_id:
+            formatName = file_format.pronom_id
+            if file_format.pronom_id[:3] == "arc":
                 formatNamespace = "https://archivematica.org"
             else:
                 formatNamespace = "http://www.nationalarchives.uk.gov"
         else:
-            formatName = slugify(format.description)
+            formatName = slugify(file_format.description)
             formatNamespace = "https://archivematica.org"
-        name = (
-            str(command.fprTool)
-            + "-"
-            + rule.purpose
-            + "-"
-            + format.description
-            + "("
-            + format.pronom_id
-            + ")"
+        name = "{}-{}-{}({})".format(
+            command.fprTool,
+            rule.purpose,
+            file_format.description.strip(),
+            file_format.pronom_id)
+        description = "For {} of {} ({}), use {}".format(
+            rule.purpose,
+            file_format.description.strip(),
+            file_format.pronom_id,
+            command.fprTool,
         )
-        description = (
-            "For "
-            + rule.purpose
-            + " of "
-            + format.description
-            + "("
-            + format.pronom_id
-            + "), use "
-            + str(command.fprTool)
-        )
-
         priority = 1
         preservationActions = []
         preservationActions.append(
@@ -1078,6 +1112,9 @@ def businessRules():
             label=command.command_usage.lower()
         ).first()
 
+        if pres_act_filter != [] and actionType.uuid not in pres_act_filter:
+            continue
+
         newRule = {
             "id": {
                 "guid": rule.uuid,
@@ -1085,7 +1122,7 @@ def businessRules():
                 "namespace": "https://archivematica.org",
             },
             "formats": [
-                {"guid": format.uuid, "name": formatName, "namespace": formatNamespace}
+                {"guid": file_format.uuid, "name": formatName, "namespace": formatNamespace}
             ],
             "preservationActions": preservationActions,
             "preservationActiontypes": [
