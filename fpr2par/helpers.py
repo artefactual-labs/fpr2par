@@ -38,7 +38,6 @@ DATE_FORMAT_PARTIAL = "%Y-%m-%d"
 GUID_HEADER = "guid"
 FILE_FORMAT_HEADER = "file-format"
 PRESERVATION_ACT_HEADER = "preservation-action-type"
-TOOL_HEADER = "tool"
 
 
 def _parse_filter_dates(request):
@@ -79,10 +78,8 @@ def _parse_filter_headers(request):
     preservation_act_header = _get_filter_list(
         request.headers.get(PRESERVATION_ACT_HEADER)
     )
-    tool_header = _get_filter_list(request.headers.get(TOOL_HEADER))
     return {
         GUID_HEADER: guid_header,
         FILE_FORMAT_HEADER: file_format_header,
         PRESERVATION_ACT_HEADER: preservation_act_header,
-        TOOL_HEADER: tool_header,
     }
