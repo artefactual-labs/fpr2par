@@ -51,7 +51,7 @@ See the [project wiki](https://github.com/artefactual-labs/fpr2par/wiki) for the
   `set +o allexport`  
   `/usr/share/archivematica/dashboard/manage.py dumpdata --output /var/archivematica/sharedDirectory/fpr2.json fpr`
 * Relace the "fpr2.json" in the "fpr2par/sourceJSON/"" directory with your newly generated fpr2.json file
-* Note that there is one small issue with the FPR source JSON: [Issue #37](https://github.com/artefactual-labs/fpr2par/issues/37). You will have to make [this fix](https://github.com/artefactual-labs/fpr2par/commit/aa081885776e2373f924f42b6de5326bd55641da) to your fpr2.json file.
+* Note that there is one [small issue](https://github.com/artefactual-labs/fpr2par/issues/37) with the FPR source JSON. You will have to make [this fix](https://github.com/artefactual-labs/fpr2par/commit/aa081885776e2373f924f42b6de5326bd55641da) to your fpr2.json file.
 * From the "Admin" menu, if you've already created a fpr2par database, press the "Delete fpr2par Database" button
 * Press the "Create fpr2par database" button
 * Press the "Load data from fixtures" button
