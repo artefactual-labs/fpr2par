@@ -892,19 +892,18 @@ def preservationActions():
             # record this information separately)
             if "%inputFile%" in action.command:
                 inputFile = "%inputFile"
-            elif "%fileFullName" in action.command:
-                inputFile = "%fileFullName%"
-            elif "%relativeLocation%" in action.command:
-                inputFile = "%relativeLocation"
             elif "$ocrfiles" in action.command:
                 inputFile = "$ocrfiles"
+            elif "%fileFullName%" in action.command:
+                inputFile = "%fileFullName%"
+            elif "%relativeLocation%" in action.command:
+                inputFile = "%relativeLocation%"
             else:
                 inputFile = "%inputFile%"
             inputFiles = {
                 "description": "The file that will be acted upon",
                 "name": inputFile,
             }
-
         # a rough heuristic for determining ouptFiles name (since FPR does not
         # record this information separately)
         if (action_type.name == "tra") or (action_type.name == "nor"):
