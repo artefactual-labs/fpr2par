@@ -904,7 +904,6 @@ def preservationActions():
                 "description": "The file that will be acted upon",
                 "name": inputFile,
             }
-            print(action.description + ": " + inputFile)
         # a rough heuristic for determining ouptFiles name (since FPR does not
         # record this information separately)
         if (action_type.name == "tra") or (action_type.name == "nor"):
