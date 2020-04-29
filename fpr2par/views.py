@@ -866,8 +866,16 @@ def preservationActions():
                         ).all()
                     )
         if rules:
+            versions = []
             for rule in rules:
                 version = fpr_format_versions.query.filter_by(uuid=rule.format).first()
+
+                # eliminate duplicate formats from constraints array
+                if version.uuid in versions:
+                    continue
+                else:
+                    versions.append(version.uuid)
+
                 if version.pronom_id:
                     if version.pronom_id[:3] == "arc":
                         namespace = "https://archivematica.org"
