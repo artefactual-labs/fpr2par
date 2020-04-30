@@ -390,28 +390,48 @@ def fileformats():
 
     * curl -v -H "Accept: application/json" -H ""file-format": "fmt/199, fmt/81, x-fmt/10"" "<uri>/api/par/file-formats
 
+    or
+
+    * curl -v -H "Accept: application/json" -H ""guid": "fmt/199, fmt/81, x-fmt/10"" "<uri>/api/par/file-formats
     """
 
     # Filter parsing using request headers.
     headers = _parse_filter_headers(request)
     format_filter = headers.get(FILE_FORMAT_HEADER, None)
+    guid_filter = headers.get(GUID_HEADER, None)
 
     offset, limit = _parse_offset_limit(request)
     before_date, after_date = _parse_filter_dates(request)
 
     versions = fpr_format_versions.query.filter(
         fpr_format_versions.last_modified.between(after_date, before_date)
-    ).all()[offset:limit]
+    ).all()
 
     response = {}
     response["fileFormats"] = []
 
     for version in versions:
-        if format_filter != []:
-            if version.pronom_id not in format_filter:
-                continue
+        if version.pronom_id:
+            if format_filter != []:
+                if version.pronom_id not in format_filter:
+                    continue
             if version.pronom_id is "":
                 continue
+        else:
+            if format_filter != []:
+                if slugify(version.description) not in format_filter:
+                    continue
+        if version.pronom_id:
+            if guid_filter != []:
+                if version.pronom_id not in guid_filter:
+                    continue
+                if version.pronom_id is "":
+                    continue
+        else:
+            if guid_filter != []:
+                if slugify(version.description) not in guid_filter:
+                    continue
+
         format = fpr_formats.query.get(version.format)
         group = fpr_format_groups.query.get(format.group)
         if version.pronom_id:
@@ -453,6 +473,8 @@ def fileformats():
         }
 
         response["fileFormats"].append(newFormat)
+
+    response["fileFormats"] = response["fileFormats"][offset:limit]
 
     return jsonify(response)
 
